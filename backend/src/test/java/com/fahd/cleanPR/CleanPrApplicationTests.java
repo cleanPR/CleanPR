@@ -1,4 +1,4 @@
-package com.fahdsaleh.cleanPR;
+package com.fahd.cleanPR;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

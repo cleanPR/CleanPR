@@ -1,4 +1,4 @@
-package com.fahdsaleh.cleanPR;
+package com.fahd.cleanPR;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
