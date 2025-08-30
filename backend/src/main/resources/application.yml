@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: cleanPR
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: Ov23li36zie7xMmzF19L
+            client-secret: 1967cfb4a02e862d25c32d6aabfb129331f14c1e
+            scope:
+              - read:user
+              - user:email
+
+
+server:
+  port: 8081
+
+
+
+
