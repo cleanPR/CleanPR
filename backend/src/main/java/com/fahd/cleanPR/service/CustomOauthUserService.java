@@ -32,11 +32,10 @@ public class CustomOauthUserService extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-
         // extract the user
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
-        String nameAttributeKey = userRequest.getClientRegistration()
+        String nameAttrKey = userRequest.getClientRegistration()
                 .getProviderDetails()
                 .getUserInfoEndpoint()
                 .getUserNameAttributeName();
@@ -50,40 +49,47 @@ public class CustomOauthUserService extends DefaultOAuth2UserService {
             getUserEmail(userRequest.getAccessToken().getTokenValue(), userAttribute);
         }
 
-        return new DefaultOAuth2User(oAuth2User.getAuthorities(), userAttribute, nameAttributeKey);
+        return new DefaultOAuth2User(oAuth2User.getAuthorities(), userAttribute, nameAttrKey);
     }
 
 
-    /*
-    * Setting up headers and
-    * requesting for the user email
+    /**
+     * 1) fetch the user emails
+     * 2) add it the profile attributes
+     * @param tokenValue
+     * @param userAttribute
      */
     private void getUserEmail(String tokenValue, Map<String, Object> userAttribute) {
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set(HttpHeaders.AUTHORIZATION, "token " + tokenValue);
-        httpHeaders.set(HttpHeaders.ACCEPT, "application/vnd.github+json");
-        HttpEntity<Void> httpEntity = new HttpEntity<>(httpHeaders);
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.set(HttpHeaders.AUTHORIZATION, "token " + tokenValue);
+            httpHeaders.set(HttpHeaders.ACCEPT, "application/vnd.github+json");
+            HttpEntity<Void> httpEntity = new HttpEntity<>(httpHeaders);
 
-        ResponseEntity<List<Map<String, Object>>> response = restTemplate.exchange(
-                GITHUB_EMAIL_ENDPOINT,
-                HttpMethod.GET,
-                httpEntity,
-                new ParameterizedTypeReference<List<Map<String, Object>>>() {}
-        );
+            ResponseEntity<List<Map<String, Object>>> response = restTemplate.exchange(
+                    GITHUB_EMAIL_ENDPOINT,
+                    HttpMethod.GET,
+                    httpEntity,
+                    new ParameterizedTypeReference<List<Map<String, Object>>>() {}
+            );
 
-        List<Map<String, Object>> emails = response.getBody();
-        if (emails.isEmpty()) {
-            return;
-        }
-
-        for(Map<String, Object> map : emails){
-            boolean isPrimary = (boolean) map.get("primary");
-            String email = (String) map.get("email");
-
-            if (isPrimary && email != null && !email.isEmpty()) {
-                userAttribute.put("email", email);
+            List<Map<String, Object>> emails = response.getBody();
+            if (emails.isEmpty()) {
+                return;
             }
+
+            for(Map<String, Object> map : emails) {
+                boolean isPrimary = (boolean) map.get("primary");
+                String email = (String) map.get("email");
+
+                if (isPrimary && email != null && !email.isEmpty()) {
+                    userAttribute.put("email", email);
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.error("Failed to fetch user email {}", e.getMessage());
         }
+
     }
 }

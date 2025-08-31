@@ -11,6 +11,12 @@ spring:
             scope:
               - read:user
               - user:email
+  data:
+    mongodb:
+      auto-index-creation: true
+      host: localhost
+      port: 27017
+      database: cleanpr
 
 
 server:
