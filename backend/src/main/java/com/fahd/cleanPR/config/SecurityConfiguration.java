@@ -1,7 +1,7 @@
 package com.fahd.cleanPR.config;
 
-import com.fahd.cleanPR.service.CustomOauth2SuccessHandler;
-import com.fahd.cleanPR.service.CustomOauthUserService;
+import com.fahd.cleanPR.security.CustomOauth2SuccessHandler;
+import com.fahd.cleanPR.security.CustomOauthUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

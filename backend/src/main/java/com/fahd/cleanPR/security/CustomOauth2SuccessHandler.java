@@ -1,9 +1,12 @@
-package com.fahd.cleanPR.service;
+package com.fahd.cleanPR.security;
 
 import com.fahd.cleanPR.model.Account;
 import com.fahd.cleanPR.model.Profile;
 import com.fahd.cleanPR.repository.AccountRepository;
+import com.fahd.cleanPR.service.AccountService;
+import com.fahd.cleanPR.service.ProfileService;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -30,6 +33,9 @@ public class CustomOauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
 
     @Autowired
     private ProfileService profileService;
+
+    @Autowired
+    private JwtService jwtService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -62,7 +68,22 @@ public class CustomOauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
 
             Profile savedProfile = profileService.updateOrSave(profile);
 
-            // 4) generating jwt for API authenticetion
+            // 4) generating jwt for client API authentication
+            String jwt = jwtService.generateToken(account);
+            LOGGER.info("Token generated for userId={}", account.getUserId());
+
+            // 5) create an http cookie and redirect the user to the dash board
+            Cookie jwtCookie = new Cookie("jwt", jwt);
+            jwtCookie.setSecure(true);
+            jwtCookie.setPath("/");
+            jwtCookie.setHttpOnly(true);
+            response.addCookie(jwtCookie);
+
+            // remove JSESSIONID because we'll use the jwt as a cookie
+            Cookie jsessionCookie = new Cookie("JSESSIONID", null);
+            jsessionCookie.setPath("/");
+            jsessionCookie.setMaxAge(0);
+            response.addCookie(jsessionCookie);
 
             response.sendRedirect("http://localhost:3000");
         } catch (Exception e) {
