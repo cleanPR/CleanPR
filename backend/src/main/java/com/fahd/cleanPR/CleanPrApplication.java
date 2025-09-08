@@ -7,9 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 @ComponentScan(basePackages = "com.fahd.cleanPR")
 public class CleanPrApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(CleanPrApplication.class, args);
 	}
-
 }

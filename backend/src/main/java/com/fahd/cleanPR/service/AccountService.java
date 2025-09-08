@@ -13,13 +13,17 @@ public class AccountService {
     @Autowired
     private AccountRepository accountRepository;
 
-    public Account saveOrUpdate(Account account) {
+    public Account saveOrUpdate(final Account account) {
         return accountRepository.findByUserId(account.getUserId())
                 .map(existing -> {
-                    account.setMongoId(existing.getMongoId());
-                    return accountRepository.save(account);
+                        account.setMongoId(existing.getMongoId());
+                        return accountRepository.save(account);
                     }
                 )
                 .orElseGet(() -> accountRepository.save(account));
+    }
+
+    public Optional<Account> findByUserId(int userId) {
+        return accountRepository.findByUserId(userId);
     }
 }

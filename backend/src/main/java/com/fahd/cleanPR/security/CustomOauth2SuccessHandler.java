@@ -44,23 +44,14 @@ public class CustomOauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
             // 1) extracting oauth user and getting repo urls
             LOGGER.info("Authentication successful");
             OAuth2User oauth2User = (OAuth2User) authentication.getPrincipal();
+
             Map<String, String> repoUrl = new HashMap<>();
             repoUrl.put("repos_url", oauth2User.getAttribute("repos_url"));
             repoUrl.put("organizations_url", oauth2User.getAttribute("organizations_url"));
 
             // 2) Building account and profile models
-            Account account = Account.builder()
-                    .userId(oauth2User.getAttribute("id"))
-                    .userLogin(oauth2User.getAttribute("login"))
-                    .email(oauth2User.getAttribute("email"))
-                    .urls(repoUrl)
-                    .build();
-
-            Profile profile = Profile.builder()
-                    .userId(oauth2User.getAttribute("id"))
-                    .login(oauth2User.getAttribute("login"))
-                    .avatarUrl(oauth2User.getAttribute("avatar_url"))
-                    .build();
+            Account account = buildAccountModel(oauth2User, repoUrl);
+            Profile profile = buildProfile(oauth2User);
 
             // 3) saving user data
             Account savedAccount = accountService.saveOrUpdate(account);
@@ -72,12 +63,15 @@ public class CustomOauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
             String jwt = jwtService.generateToken(account);
             LOGGER.info("Token generated for userId={}", account.getUserId());
 
-            // 5) create an http cookie and redirect the user to the dash board
+            // 5) create a http cookie use the jwt and redirect the user to the dash board
             Cookie jwtCookie = new Cookie("jwt", jwt);
-            jwtCookie.setSecure(true);
+            jwtCookie.setSecure(false);
             jwtCookie.setPath("/");
             jwtCookie.setHttpOnly(true);
+            // getting the expiration date for the token in ms and converting it to seconds = 86,000 seconds = 24 hours
+            jwtCookie.setMaxAge((int) jwtService.extractExpirationDate(jwt).getTime() / 1000);
             response.addCookie(jwtCookie);
+
 
             // remove JSESSIONID because we'll use the jwt as a cookie
             Cookie jsessionCookie = new Cookie("JSESSIONID", null);
@@ -85,12 +79,36 @@ public class CustomOauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
             jsessionCookie.setMaxAge(0);
             response.addCookie(jsessionCookie);
 
-            response.sendRedirect("http://localhost:3000");
+            response.sendRedirect("http://localhost:3000/dashboard");
         } catch (Exception e) {
             LOGGER.error("Error after authentication error={}", e.getMessage());
             // TODO: redirect back to the login page
+
+            // in case of an error we'll set max age of the cookie 0 so it doesn't stay in the browser
+            Cookie cookie = new Cookie("jwt", null);
+            cookie.setMaxAge(0);
+            cookie.setPath("/");
+            cookie.setHttpOnly(true);
+            response.addCookie(cookie);
+            response.sendRedirect("http://localhost:3000");
         }
     }
 
+    public Profile buildProfile(OAuth2User oauth2User) {
+        return Profile.builder()
+                .userId(oauth2User.getAttribute("id"))
+                .login(oauth2User.getAttribute("login"))
+                .avatarUrl(oauth2User.getAttribute("avatar_url"))
+                .build();
+    }
+
+    public Account buildAccountModel(OAuth2User oauth2User, Map<String, String> repoUrl) {
+        return Account.builder()
+                .userId(oauth2User.getAttribute("id"))
+                .userLogin(oauth2User.getAttribute("login"))
+                .email(oauth2User.getAttribute("email"))
+                .urls(repoUrl)
+                .build();
+    }
 
 }

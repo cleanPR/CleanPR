@@ -18,6 +18,9 @@ spring:
       port: 27017
       database: cleanpr
 
+client:
+  url: http://localhost:3000
+
 jwt.secret.key: Zjk5ZjQ0ZDEwN2U2N2Y1MjdhMzkwYjkxOGY1ZjYwOWRhNTE2MDlmNGFiNGY5NDc4ZjYyZjA3M2MzZTM0OWJiZg==
 
 server:

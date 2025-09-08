@@ -5,6 +5,8 @@ import com.fahd.cleanPR.repository.ProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import static java.lang.Integer.parseInt;
+
 @Service
 public class ProfileService {
 
@@ -23,5 +25,9 @@ public class ProfileService {
                     }
                 )
                 .orElseGet(() -> profileRepository.save(profile));
+    }
+
+    public Profile fetchUser(int userId) {
+        return profileRepository.findByUserId(userId).orElseThrow();
     }
 }
