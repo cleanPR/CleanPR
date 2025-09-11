@@ -7,14 +7,40 @@ import {
   GithubIcon,
   LogoImg
 } from './styles/Auth.styles';
+import { useNavigate } from 'react-router-dom';
 
 import logo from '../../assests/images/logo.png';
 
-
-
 function Auth() {
+  const redirect = useNavigate();
   const handleLogin = () => {
-    window.location.href = "http://localhost:8081/oauth2/authorization/github";
+    const width = 600;
+    const height = 700;
+
+    // opening a window for the user to authenticate
+    const authPop = window.open(
+      "http://localhost:8081/oauth2/authorization/github",
+      "Github Authentication",
+      `width=${width},height=${height}`
+    )
+
+    /**
+     * this event will trigger if the authentication in the pop is successfull
+     * 
+     * check if the origin of the trigger is the same as the current
+     * if the data type that was sent in the payload == 'auth-success' then authenticate the user
+     */
+    window.addEventListener("message", (e) => {
+      if (e.origin !== window.location.origin) return;
+
+      if (e.data.type === "auth-success") {
+        redirect("/authenticate")
+        setTimeout(() => {
+        }, 300)
+        authPop.close()
+      }
+      
+    }, {once: true}) // removes it self after being triggered
   };
 
   return (

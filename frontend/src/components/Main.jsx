@@ -4,8 +4,11 @@ import DashBoard from '../components/dashboard/DashBoard'
 import { Route, BrowserRouter, Routes } from 'react-router-dom'
 import OAuthCallBack from './Auth/OAuthCallBack'
 import { useAuth } from './hooks/AuthContext'
+import AuthenticationSuccess from './Auth/AuthenticationSuccess'
+
 function Main() {
   const { isLoggedIn } = useAuth()
+  
   return (
     <BrowserRouter>
       <Routes>
@@ -15,7 +18,8 @@ function Main() {
         : <Route path="/" element={<Auth />} />
       }
         
-        <Route path="/call-back" element={<OAuthCallBack />} />
+        <Route path="/authenticate" element={<OAuthCallBack />} />
+        <Route path="/call-back" element={<AuthenticationSuccess />} />
         
       </Routes>
     </BrowserRouter>
