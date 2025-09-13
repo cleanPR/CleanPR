@@ -1,16 +1,5 @@
 import styled from "styled-components";
 
-// Color palette
-const colors = {
-  primary: '#0A0F1C',
-  surface: '#151b2d',
-  surfaceHover: '#23283a',
-  accent: '#5B86FF',
-  accentSecondary: '#00E5A5',
-  text: '#F5F7FA',
-  textSecondary: '#8B8B8B'
-};
-
 export const DashboardWrapper = styled.div`
   height: 100vh;
   width: 100vw;
@@ -26,30 +15,6 @@ export const DashboardBody = styled.div`
     border: 1px solid black;
 `
 
-export const SidebarHeader = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 20px 16px;
-  border-bottom: 1px solid ${colors.surfaceHover};
-  background: linear-gradient(135deg, ${colors.surface} 0%, ${colors.surfaceHover} 100%);
-  
-  h2 {
-    color: ${colors.text};
-    font-family: 'Inter', monospace;
-    font-size: 18px;
-    font-weight: 700;
-    margin: 0;
-    letter-spacing: 0.5px;
-  }
-`;
-
-export const SidebarLogo = styled.img`
-  height: 32px;
-  width: 32px;
-  object-fit: contain;
-`;
-
 export const ListContainer = styled.div`
   border-right: 2px solid #23283a;
   width: 20%;
@@ -57,12 +22,6 @@ export const ListContainer = styled.div`
   display: flex;
   flex-direction: column;
   position: relative;
-  min-width: 280px;
-  
-  @media (max-width: 768px) {
-    min-width: 240px;
-    width: 25%;
-  }
 `
 export const List = styled.ul`
   list-style: none;
@@ -70,45 +29,22 @@ export const List = styled.ul`
   flex-direction: column;
   width: 100%;
   margin: 0;
-  padding: 16px 0;
+  padding: 0;
   align-items: center;
-  flex-grow: 1;
 `
 
 export const ListItem = styled.li`
-  color: ${props => props.$active ? colors.accent : colors.text};
-  font-family: 'Inter', monospace;
-  font-weight: ${props => props.$active ? '600' : '400'};
+  color: rgb(245, 247, 250);
+  font-family: monospace;
   width: 90%;
-  margin: 4px 0;
-  border-radius: 8px;
+  margin-top: 10px;
+  border-radius: 5px;
+  text-align: center;
   cursor: pointer;
-  padding: 12px 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  transition: all 0.2s ease-in-out;
-  position: relative;
-  border-left: 3px solid transparent;
-  
-  ${props => props.$active && `
-    background: linear-gradient(90deg, rgba(91, 134, 255, 0.1) 0%, rgba(91, 134, 255, 0.05) 100%);
-    border-left-color: ${colors.accent};
-  `}
+  padding: 10px;
 
   &:hover {
-    background-color: ${props => props.$active ? 'rgba(91, 134, 255, 0.15)' : colors.surfaceHover};
-    transform: translateX(2px);
-  }
-  
-  &:focus-visible {
-    outline: 2px solid ${colors.accent};
-    outline-offset: 2px;
-  }
-  
-  .icon {
-    font-size: 20px;
-    opacity: ${props => props.$active ? '1' : '0.7'};
+    background-color: #283046;
   }
 `
 
