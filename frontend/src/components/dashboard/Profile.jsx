@@ -1,11 +1,16 @@
-import React from 'react'
+import React from 'react';
 import { useAuth } from '../hooks/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Button, Avatar } from '@mui/material';
+import { Avatar } from '@mui/material';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 import {
     ProfileWrapper,
-    ProfileContainer
+    ProfileContainer,
+    UserInfo,
+    UserName,
+    UserStatus,
+    LogoutButton
 } from './styles/Profile.styles';
 
 function Profile() {
@@ -17,48 +22,38 @@ function Profile() {
         navigate("/");
     };
 
-    const profileContainerStyle = {
-        display: 'flex',
-        alignItems: 'center',
-        gap: '0.5rem',
-        marginBottom: '1.2rem',
-    };
-
     const AvatarStyle = {
-        width: 35,
-        height: 35,
-        bgcolor: '#23283a',
-        border: '2px solid #23283a',
+        width: 40,
+        height: 40,
+        bgcolor: '#5B86FF',
+        border: '2px solid rgba(91, 134, 255, 0.3)',
+        fontSize: '16px',
+        fontWeight: '600'
     }
 
     return (
         <ProfileWrapper>
             {user && (
-                <ProfileContainer style={profileContainerStyle}>
-                
+                <ProfileContainer>
                     <Avatar
                         alt={user.login || 'User'}
                         src={user.avatarUrl || ''}
                         sx={AvatarStyle}
-                    />
+                    >
+                        {!user.avatarUrl && (user.login ? user.login[0].toUpperCase() : 'U')}
+                    </Avatar>
 
-                    <span style={{
-                        color: '#F5F7FA',
-                        fontWeight: 600,
-                        fontFamily: 'monospace',
-                        fontSize: '10px',
-                    }}>{user.login || 'User'}</span>
-
+                    <UserInfo>
+                        <UserName>{user.login || 'User'}</UserName>
+                        <UserStatus>Signed in</UserStatus>
+                    </UserInfo>
                 </ProfileContainer>
             )}
 
-            <Button
-                variant='contained'
-                onClick={handleLogout}
-                sx={{
-                    backgroundColor: '#0A0F1C',
-                }}
-            >Logout</Button>
+            <LogoutButton onClick={handleLogout}>
+                <LogoutIcon className="logout-icon" />
+                Logout
+            </LogoutButton>
             
         </ProfileWrapper>
     );
