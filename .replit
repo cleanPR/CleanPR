@@ -38,3 +38,12 @@ externalPort = 80
 localPort = 27017
 externalPort = 3000
 exposeLocalhost = true
+
+[[ports]]
+localPort = 46533
+externalPort = 3001
+
+[deployment]
+deploymentTarget = "vm"
+run = ["bash", "-c", "mongod --dbpath /tmp/mongodb --port 27017 --bind_ip 127.0.0.1 --fork --logpath /tmp/mongodb.log & sleep 5 && cd backend && java -jar target/*.jar & cd ../frontend && npx serve -s build -l 5000"]
+build = ["bash", "-c", "cd backend && ./mvnw clean package -DskipTests && cd ../frontend && npm run build"]
