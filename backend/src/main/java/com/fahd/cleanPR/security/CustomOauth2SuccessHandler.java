@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -36,6 +37,9 @@ public class CustomOauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
 
     @Autowired
     private JwtService jwtService;
+
+    @Value("${client.url}")
+    String CLIENT_URL;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -79,12 +83,12 @@ public class CustomOauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
             jsessionCookie.setMaxAge(0);
             response.addCookie(jsessionCookie);
 
-            response.sendRedirect("http://localhost:3000/dashboard");
+            response.sendRedirect(CLIENT_URL + "/call-back");
         } catch (Exception e) {
             LOGGER.error("Error after authentication error={}", e.getMessage());
             // TODO: redirect back to the login page
 
-            // in case of an error we'll set max age of the cookie 0 so it doesn't stay in the browser
+            // in case of an error we'll set max age of the cookie so it doesn't stay in the browser
             Cookie cookie = new Cookie("jwt", null);
             cookie.setMaxAge(0);
             cookie.setPath("/");

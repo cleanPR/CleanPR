@@ -46,7 +46,6 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(requests -> requests
                         // permitting all preflights
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/api/v1/public").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth -> oauth

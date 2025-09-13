@@ -24,8 +24,6 @@ public class ProfileController {
     @GetMapping("")
     public ResponseEntity<Object> getProfile(Authentication authentication) {
         try {
-            System.out.println("hello world");
-            System.out.println(authentication.getPrincipal().toString());
             Account account = (Account) authentication.getPrincipal();
             return ResponseEntity.ok(profileService.fetchUser(account.getUserId()));
         } catch (Exception e) {
