@@ -8,11 +8,12 @@ spring:
       client:
         registration:
           github:
-            client-id: ${gitHubClientId}
-            client-secret: ${gitHubClientSecret}
+            client-id: ${GITHUB_CLIENT_ID}
+            client-secret: ${GITHUB_CLIENT_SECRET}
             scope:
               - read:user
               - user:email
+            redirect-uri: "https://03db62d1-2049-4d5d-a15a-9c68a075dd5d-00-3odpkv9xrdfc.picard.replit.dev:8081/login/oauth2/code/github"
   data:
     mongodb:
       auto-index-creation: true
@@ -21,9 +22,9 @@ spring:
       database: cleanpr
 
 client:
-  url: http://localhost:3000
+  url: https://03db62d1-2049-4d5d-a15a-9c68a075dd5d-00-3odpkv9xrdfc.picard.replit.dev:5000
 
-jwt.secret.key: ${jwtSecret}
+jwt.secret.key: ${JWT_SECRET}
 
 server:
   port: 8081
