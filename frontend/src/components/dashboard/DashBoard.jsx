@@ -1,32 +1,49 @@
-import React from 'react';
-import { useAuth } from '../hooks/AuthContext';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Profile from './Profile';
+import Repositories from './Repositories';
+import PullRequests from './PullRequests';
+
 import {
   DashboardWrapper,
   DashboardTop,
   DashboardLogo,
   DashboardBody,
-  TabList
-} from './Dashboard.styles';
-
-import logo from '../../assests/images/logo.png';
-import Profile from './Profile';
-
+  ListContainer,
+  List,
+  ListItem
+} from './styles/Dashboard.styles';
 
 export default function DashBoard() {
-  const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const[selectedTab, setSelectedTab] = useState('repositories')
+
+  const tabs = {
+    "repositories": <Repositories />,
+    "pullRequests": <PullRequests />
+  }
+
+  const handleTableClick = (e) => {
+    const title = e.target.title;
+    setSelectedTab(prev => title)
+  }
 
   return (
     <DashboardWrapper>
-      <DashboardTop>
-        <DashboardLogo src={logo} alt="CleanPR Logo" />
-        <Profile />
-      </DashboardTop>
       <DashboardBody>
-        <TabList>
 
-        </TabList>
+        <ListContainer>
+          <List>
+            <ListItem title="repositories" onClick={handleTableClick}>Repositories</ListItem>
+            <ListItem title="pullRequests" onClick={handleTableClick}>Pull Requests</ListItem>
+          </List>
+          <Profile />
+        </ListContainer>
+
+        <>
+        {tabs[selectedTab]}
+        </>
+
       </DashboardBody>
     </DashboardWrapper>
   );

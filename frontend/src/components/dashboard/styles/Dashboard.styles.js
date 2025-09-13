@@ -1,21 +1,51 @@
 import styled from "styled-components";
 
 export const DashboardWrapper = styled.div`
-  min-height: 100vh;
+  height: 100vh;
   width: 100vw;
+  display: flex;
+  flex-direction: column;
   background: #0A0F1C;
 `;
 
 export const DashboardBody = styled.div`
+    display: flex;
     width: 100%;
     height: 100%;
     border: 1px solid black;
 `
 
-export const TabList = styled.div`
-    border: 1px solid white;
-    width: 20%;
-    height: 100%;
+export const ListContainer = styled.div`
+  border-right: 2px solid #23283a;
+  width: 20%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+`
+export const List = styled.ul`
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+`
+
+export const ListItem = styled.li`
+  color: rgb(245, 247, 250);
+  font-family: monospace;
+  width: 90%;
+  margin-top: 10px;
+  border-radius: 5px;
+  text-align: center;
+  cursor: pointer;
+  padding: 10px;
+
+  &:hover {
+    background-color: #283046;
+  }
 `
 
 export const DashboardTop = styled.div`
@@ -23,9 +53,10 @@ export const DashboardTop = styled.div`
   grid-template-columns: 1fr 1fr;
   align-items: center;
   justify-content: space-between;
-  padding: 25px 50px 25px 50px;
+  padding: 0 15px 0 15px;
   background: #151b2d;
   border-bottom: 2px solid #23283a;
+
   @media (max-width: 700px) {
     grid-template-columns: 1fr;
     row-gap: 1.5rem;
@@ -34,7 +65,7 @@ export const DashboardTop = styled.div`
 `;
 
 export const DashboardLogo = styled.img`
-  height: 56px;
+  height: 35px;
   width: auto;
   object-fit: contain;
   @media (max-width: 700px) {

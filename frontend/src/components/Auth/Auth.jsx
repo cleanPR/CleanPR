@@ -32,26 +32,28 @@ function Auth() {
      */
     window.addEventListener("message", (e) => {
       if (e.origin !== window.location.origin) return;
-
+      console.log("auth")
       if (e.data.type === "auth-success") {
-        redirect("/authenticate")
         setTimeout(() => {
         }, 300)
         authPop.close()
+        redirect("/authenticate")
       }
-      
-    }, {once: true}) // removes it self after being triggered
+    }) // removes it self after being triggered
   };
 
   return (
     <AuthWrapper>
       <LoginFormContainer>
+      
         <LogoImg src={logo} alt="CleanPR Logo" />
         <WelcomeHeading>Welcome to CleanPR</WelcomeHeading>
+
         <GithubButton onClick={handleLogin}>
           <GithubIcon />
           Login with GitHub
         </GithubButton>
+
       </LoginFormContainer>
     </AuthWrapper>
   );

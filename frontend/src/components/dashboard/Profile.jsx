@@ -1,14 +1,17 @@
 import React from 'react'
 import { useAuth } from '../hooks/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { Button, Avatar } from '@mui/material';
+
 import {
-    Button,
-    Avatar
-} from '@mui/material';
+    ProfileWrapper,
+    ProfileContainer
+} from './styles/Profile.styles';
 
 function Profile() {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+
     const handleLogout = () => {
         logout();
         navigate("/");
@@ -17,48 +20,48 @@ function Profile() {
     const profileContainerStyle = {
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'flex-end',
-        flexDirection: 'column',
-        padding: '20px',
-        marginLeft: '25px'
+        gap: '0.5rem',
+        marginBottom: '1.2rem',
+    };
+
+    const AvatarStyle = {
+        width: 35,
+        height: 35,
+        bgcolor: '#23283a',
+        border: '2px solid #23283a',
     }
 
     return (
-        <div style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'flex-end' 
-            }}>
-
+        <ProfileWrapper>
             {user && (
-                <div style={profileContainerStyle}>
-
+                <ProfileContainer style={profileContainerStyle}>
+                
                     <Avatar
                         alt={user.login || 'User'}
                         src={user.avatarUrl || ''}
-                        sx={{ 
-                            width: 58,
-                            height: 58, 
-                            bgcolor: '#23283a', 
-                            border: '2px solid #23283a',
-                            marginBottom: "10px"
-                        }}
+                        sx={AvatarStyle}
                     />
-                    <span style={{ 
+
+                    <span style={{
                         color: '#F5F7FA',
-                        fontWeight: 600, 
-                        fontFamily: 'monospace' 
+                        fontWeight: 600,
+                        fontFamily: 'monospace',
+                        fontSize: '10px',
                     }}>{user.login || 'User'}</span>
-                </div>
+
+                </ProfileContainer>
             )}
+
             <Button
                 variant='contained'
                 onClick={handleLogout}
                 sx={{
                     backgroundColor: '#0A0F1C',
-                }}>Logout</Button>
-        </div>
-    )
+                }}
+            >Logout</Button>
+            
+        </ProfileWrapper>
+    );
 }
 
 export default Profile

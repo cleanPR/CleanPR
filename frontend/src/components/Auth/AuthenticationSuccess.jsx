@@ -69,12 +69,15 @@ function AuthenticationSuccess() {
 
   return (
     <Wrapper>
+
       <SuccessCircle>
         <CheckMark viewBox="0 0 52 52">
           <path d="M14 27l8 8 16-16" />
         </CheckMark>
       </SuccessCircle>
+      
       <SuccessText>Authentication Successful!</SuccessText>
+
     </Wrapper>
   );
 }

@@ -15,12 +15,16 @@ import {
 function OAuthCallBack() {
   const { setUser } = useAuth();
   const navigate = useNavigate();
+
   useEffect(() => {
     api.get("/profile")
+      // on success store the user in local storage and navigate to dashboard
       .then(res => {
         setUser(res.data);
         navigate("/dashboard");
       })
+
+      // on error navigate back to login
       .catch(err => {
         setUser(null);
         console.log(err?.response?.data || err);
