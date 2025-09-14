@@ -1,88 +1,165 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 
-export const DashboardWrapper = styled.div`
-  height: 100vh;
-  width: 100vw;
-  display: flex;
-  flex-direction: column;
-  background: #0A0F1C;
+// Animations
+const gradientShift = keyframes`
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 `;
 
-export const DashboardBody = styled.div`
-    display: flex;
-    width: 100%;
-    height: 100%;
-    border: 1px solid black;
-`
+export const fadeInUp = keyframes`
+  from { opacity: 0; transform: translateY(30px);}
+  to { opacity: 1; transform: translateY(0);}
+`;
 
-export const ListContainer = styled.div`
-  border-right: 2px solid #23283a;
-  width: 20%;
-  height: 100%;
+// Dashboard Wrapper
+export const DashboardWrapper = styled.div`
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+  background-size: 400% 400%;
+  animation: ${gradientShift} 15s ease infinite;
+  display: flex;
+`;
+
+// Sidebar
+export const Sidebar = styled.aside`
+  width: 260px;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(18px);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(139, 69, 255, 0.1);
   display: flex;
   flex-direction: column;
-  position: relative;
-`
-export const List = styled.ul`
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  margin: 0;
-  padding: 0;
   align-items: center;
-`
+  padding: 2.5rem 1.2rem 1.2rem 1.2rem;
+  position: relative;
+  z-index: 2;
 
-export const ListItem = styled.li`
-  color: rgb(245, 247, 250);
-  font-family: monospace;
-  width: 90%;
-  margin-top: 10px;
-  border-radius: 5px;
-  text-align: center;
+  @media (max-width: 900px) {
+    width: 70px;
+    padding: 1.2rem 0.5rem;
+  }
+`;
+
+// Sidebar Tabs
+export const SidebarTab = styled.button`
+  width: 100%;
+  background: ${({ className }) =>
+    className && className.includes('active')
+      ? 'rgba(139, 69, 255, 0.13)'
+      : 'transparent'};
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 0.95rem 1.1rem;
+  margin-bottom: 1rem;
+  font-size: 1.05rem;
+  font-weight: 500;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
   cursor: pointer;
-  padding: 10px;
+  box-shadow: none;
+  transition: background 0.18s, color 0.18s, transform 0.18s;
 
   &:hover {
-    background-color: #283046;
+    background: rgba(139, 69, 255, 0.09);
+    color: #e0d7fa;
+    transform: translateY(-1px) scale(1.01);
   }
-`
 
-export const DashboardTop = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  &:active {
+    background: rgba(139, 69, 255, 0.18);
+    color: #fff;
+    transform: none;
+  }
+`;
+
+// Profile Section
+export const ProfileSection = styled.div`
+  margin-top: auto;
+  width: 100%;
+  background: rgba(139, 69, 255, 0.07);
+  border-radius: 16px;
+  padding: 1.2rem 1rem 1rem 1rem;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 15px 0 15px;
-  background: #151b2d;
-  border-bottom: 2px solid #23283a;
+  gap: 1.1rem;
+  box-shadow: 0 2px 12px rgba(139, 69, 255, 0.1);
+  animation: ${fadeInUp} 0.7s ease;
 
-  @media (max-width: 700px) {
-    grid-template-columns: 1fr;
-    row-gap: 1.5rem;
-    padding: 1.2rem 2vw 1.2rem 2vw;
+  @media (max-width: 900px) {
+    gap: 0.7rem;
+    padding: 0.7rem 0.3rem;
   }
 `;
 
-export const DashboardLogo = styled.img`
-  height: 35px;
-  width: auto;
-  object-fit: contain;
-  @media (max-width: 700px) {
-    height: 40px;
-  }
+export const ProfileAvatar = styled.img`
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #8b45ff;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(139, 69, 255, 0.13);
+  margin-bottom: 0.3rem;
 `;
 
-export const UserProfileBox = styled.div`
+export const ProfileName = styled.div`
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.1rem;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #8b45ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.2rem;
+`;
+
+// Logout Button (icon only, same style as SidebarTab)
+export const LogoutButton = styled.button`
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: 1.2rem;
-  background: #23283a;
+  justify-content: center;
+  background: ${({ className }) =>
+    className && className.includes('active')
+      ? 'rgba(139, 69, 255, 0.13)'
+      : 'transparent'};
+  color: #fff;
+  border: none;
   border-radius: 12px;
-  padding: 0.7rem 1.2rem;
-  color: #F5F7FA;
-  font-family: monospace;
-  font-size: 1.1rem;
-  box-shadow: 0 2px 8px rgba(10,15,28,0.10);
+  font-size: 1.35rem;
+  cursor: pointer;
+  box-shadow: none;
+  transition: background 0.18s, color 0.18s, transform 0.18s;
+  margin-top: 0.2rem;
+
+  &:hover {
+    background: rgba(139, 69, 255, 0.09);
+    color: #e0d7fa;
+    transform: translateY(-1px) scale(1.07);
+  }
+
+  &:active {
+    background: rgba(139, 69, 255, 0.18);
+    color: #fff;
+    transform: none;
+  }
+`;
+
+// Main Content
+export const MainContent = styled.main`
+  flex: 1;
+  padding: 3rem 2.5rem;
+  animation: ${fadeInUp} 0.8s ease;
+  min-width: 0;
+
+  @media (max-width: 900px) {
+    padding: 1.5rem 0.7rem;
+  }
 `;

@@ -39,7 +39,7 @@ function Auth() {
         authPop.close()
         redirect("/authenticate")
       }
-    }) // removes it self after being triggered
+    })
   };
 
   return (

@@ -1,19 +1,23 @@
 import React from 'react'
-import DashBoard from './DashBoard'
-import { Button } from '@mui/material'
 import { 
   RepositoriesTabHeading,
   RepositoriesTabTitle,
-  RepositoriesTabWrapper
- } from './styles/DashboardBody.styles'
-
+  RepositoriesTabWrapper,
+  AddRepoButton
+} from './styles/DashboardBody.styles'
 
 function Repositories() {
   return (
     <RepositoriesTabWrapper>
       <RepositoriesTabHeading>
         <RepositoriesTabTitle>Repositories</RepositoriesTabTitle>
-        <Button variant='contained' >add repository</Button>
+        <AddRepoButton>
+          {/* Plus icon SVG */}
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
+            <path d="M12 5v14m7-7H5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          Add Repository
+        </AddRepoButton>
       </RepositoriesTabHeading>
     </RepositoriesTabWrapper>
   )
