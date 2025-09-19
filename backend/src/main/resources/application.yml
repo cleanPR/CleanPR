@@ -13,12 +13,13 @@ spring:
             scope:
               - read:user
               - user:email
-  data:
-    mongodb:
-      auto-index-creation: true
-      host: localhost
-      port: 27017
-      database: cleanpr
+  datasource:
+    url: jdbc:postgresql://localhost:5432/cleanpr
+    username: postgres
+    password: ${dbPassword}
+  jpa:
+    hibernate:
+      ddl-auto: update
 
 client:
   url: http://localhost:3000
@@ -27,6 +28,10 @@ jwt.secret.key: ${jwtSecret}
 
 server:
   port: 8081
+
+github:
+  appId: 1953390
+  key: C:\Users\fahda\Downloads\clean-pr.2025-09-15.private-key.pem
 
 
 

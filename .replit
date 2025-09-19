@@ -1,0 +1,49 @@
+modules = ["java-graalvm22.3", "nodejs-20", "web"]
+[agent]
+expertMode = true
+
+[nix]
+channel = "stable-25_05"
+packages = ["mongodb"]
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Frontend"
+
+[[workflows.workflow]]
+name = "Frontend"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd frontend && npm start"
+waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[[ports]]
+localPort = 27017
+externalPort = 3000
+exposeLocalhost = true
+
+[[ports]]
+localPort = 46533
+externalPort = 3001
+
+[deployment]
+deploymentTarget = "vm"
+run = ["bash", "-c", "mongod --dbpath /tmp/mongodb --port 27017 --bind_ip 127.0.0.1 --fork --logpath /tmp/mongodb.log & sleep 5 && cd backend && java -jar target/*.jar & cd ../frontend && npx serve -s build -l 5000"]
+build = ["bash", "-c", "cd backend && ./mvnw clean package -DskipTests && cd ../frontend && npm run build"]

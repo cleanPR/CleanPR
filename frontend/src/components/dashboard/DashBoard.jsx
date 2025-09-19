@@ -1,50 +1,58 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Profile from './Profile';
 import Repositories from './Repositories';
 import PullRequests from './PullRequests';
-
+import Profile from './Profile';
 import {
   DashboardWrapper,
-  DashboardTop,
-  DashboardLogo,
-  DashboardBody,
-  ListContainer,
-  List,
-  ListItem
+  Sidebar,
+  SidebarTab,
+  ProfileSection,
+  MainContent
 } from './styles/Dashboard.styles';
 
+
 export default function DashBoard() {
-  const navigate = useNavigate();
-  const[selectedTab, setSelectedTab] = useState('repositories')
-
+  const [selectedTab, setSelectedTab] = useState('repositories');
+  
   const tabs = {
-    "repositories": <Repositories />,
-    "pullRequests": <PullRequests />
-  }
+    repositories: <Repositories />,
+    pullRequests: <PullRequests />
+  };
 
-  const handleTableClick = (e) => {
-    const title = e.target.title;
-    setSelectedTab(prev => title)
-  }
+  const handleTabClick = (tab) => {
+    setSelectedTab(tab);
+  };
 
   return (
     <DashboardWrapper>
-      <DashboardBody>
 
-        <ListContainer>
-          <List>
-            <ListItem title="repositories" onClick={handleTableClick}>Repositories</ListItem>
-            <ListItem title="pullRequests" onClick={handleTableClick}>Pull Requests</ListItem>
-          </List>
+      <Sidebar>
+
+        {/* if the selected tab is === repositories set the styles to the active class */}
+        <SidebarTab
+          className={selectedTab === 'repositories' ? 'active' : ''}
+          onClick={() => handleTabClick('repositories')}
+        >
+          Repositories
+        </SidebarTab>
+
+        <SidebarTab
+          className={selectedTab === 'pullRequests' ? 'active' : ''}
+          onClick={() => handleTabClick('pullRequests')}
+        >
+          Pull Requests
+        </SidebarTab>
+
+        <ProfileSection>
           <Profile />
-        </ListContainer>
+        </ProfileSection>
 
-        <>
+      </Sidebar>
+
+      <MainContent>
         {tabs[selectedTab]}
-        </>
+      </MainContent>
 
-      </DashboardBody>
     </DashboardWrapper>
   );
 }

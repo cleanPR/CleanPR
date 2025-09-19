@@ -1,5 +1,3 @@
-
-import { type } from '@testing-library/user-event/dist/type';
 import React, { useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 
@@ -56,6 +54,12 @@ const SuccessText = styled.h2`
 
 function AuthenticationSuccess() {
 
+
+  /**
+   * when the page loads post an event message to the opener (parent)
+   * because the authentication was succeful and the pop can be closed
+   * after the authentication was successfull
+   */
     useEffect(() => {
         if (window.opener) {
             window.opener.postMessage(

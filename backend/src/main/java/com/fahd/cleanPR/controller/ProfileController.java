@@ -18,8 +18,13 @@ import static com.fahd.cleanPR.CleanPrConstants.PROFILE_ROUTE;
 @RequestMapping(PROFILE_ROUTE)
 public class ProfileController {
 
+
+    private final ProfileService profileService;
+
     @Autowired
-    private ProfileService profileService;
+    public ProfileController(ProfileService profileService) {
+        this.profileService = profileService;
+    }
 
     @GetMapping("")
     public ResponseEntity<Object> getProfile(Authentication authentication) {

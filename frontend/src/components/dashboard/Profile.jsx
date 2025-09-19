@@ -1,12 +1,12 @@
 import React from 'react'
 import { useAuth } from '../hooks/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { Button, Avatar } from '@mui/material';
 
 import {
-    ProfileWrapper,
-    ProfileContainer
-} from './styles/Profile.styles';
+    ProfileAvatar,
+    ProfileName,
+    LogoutButton
+} from './styles/Dashboard.styles';
 
 function Profile() {
     const { user, logout } = useAuth();
@@ -17,50 +17,18 @@ function Profile() {
         navigate("/");
     };
 
-    const profileContainerStyle = {
-        display: 'flex',
-        alignItems: 'center',
-        gap: '0.5rem',
-        marginBottom: '1.2rem',
-    };
-
-    const AvatarStyle = {
-        width: 35,
-        height: 35,
-        bgcolor: '#23283a',
-        border: '2px solid #23283a',
-    }
-
     return (
-        <ProfileWrapper>
-            {user && (
-                <ProfileContainer style={profileContainerStyle}>
-                
-                    <Avatar
-                        alt={user.login || 'User'}
-                        src={user.avatarUrl || ''}
-                        sx={AvatarStyle}
-                    />
+        <>
+            <ProfileAvatar src={user.avatarUrl} alt="avatar" />
+            <ProfileName>{user.login}</ProfileName>
+            <LogoutButton title="Logout" onClick={handleLogout}>
+                {/* Logout SVG icon */}
+                <svg width="22" height="22" fill="none" viewBox="0 0 24 24">
+                    <path d="M16 17l5-5m0 0l-5-5m5 5H9m4 5v1a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2h6a2 2 0 012 2v1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+            </LogoutButton>
+        </>
 
-                    <span style={{
-                        color: '#F5F7FA',
-                        fontWeight: 600,
-                        fontFamily: 'monospace',
-                        fontSize: '10px',
-                    }}>{user.login || 'User'}</span>
-
-                </ProfileContainer>
-            )}
-
-            <Button
-                variant='contained'
-                onClick={handleLogout}
-                sx={{
-                    backgroundColor: '#0A0F1C',
-                }}
-            >Logout</Button>
-            
-        </ProfileWrapper>
     );
 }
 
