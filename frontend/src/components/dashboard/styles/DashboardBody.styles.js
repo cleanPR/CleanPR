@@ -32,29 +32,30 @@ export const AddRepoButton = styled.button`
   background: ${({ className }) =>
     className && className.includes('active')
       ? 'rgba(139, 69, 255, 0.13)'
-      : 'transparent'};
+      : 'rgba(139, 69, 255, 0.10)'};
   color: #fff;
   border: none;
-  border-radius: 12px;
-  padding: 0.7rem 1.3rem;
+  border-radius: 999px; // Makes the button fully round
+  padding: 0.65rem 1.4rem;
   font-size: 1rem;
   font-weight: 500;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   cursor: pointer;
-  box-shadow: none;
+  box-shadow: 0 2px 8px rgba(139, 69, 255, 0.08);
   transition: background 0.18s, color 0.18s, transform 0.18s;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
 
   &:hover {
-    background: rgba(139, 69, 255, 0.09);
+    background: rgba(139, 69, 255, 0.16);
     color: #e0d7fa;
-    transform: translateY(-1px) scale(1.03);
+    transform: translateY(-1px) scale(1.04);
+    box-shadow: 0 4px 16px rgba(139, 69, 255, 0.13);
   }
 
   &:active {
-    background: rgba(139, 69, 255, 0.18);
+    background: rgba(139, 69, 255, 0.20);
     color: #fff;
     transform: none;
   }
