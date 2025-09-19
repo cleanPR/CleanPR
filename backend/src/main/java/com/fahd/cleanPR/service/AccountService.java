@@ -28,4 +28,5 @@ public class AccountService {
     public Account findByUserEmail(String email) {
         return accountRepository.findByEmail(email).orElse(null);
     }
+
 }

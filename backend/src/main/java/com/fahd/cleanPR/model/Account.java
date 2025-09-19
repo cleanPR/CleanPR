@@ -1,10 +1,11 @@
 package com.fahd.cleanPR.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.*;
 
-@Data
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,7 +15,10 @@ import lombok.*;
 public class Account {
 
     @Id
-    int userId;
-    String userLogin;
-    String email;
+    @Column
+    private String userId;
+    @Column
+    private String userLogin;
+    @Column
+    private String email;
 }
