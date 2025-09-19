@@ -1,12 +1,8 @@
 package com.fahd.cleanPR.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
-
-import java.util.Map;
 
 @Data
 @Builder
@@ -14,14 +10,11 @@ import java.util.Map;
 @NoArgsConstructor
 @Getter
 @Setter
-@Document(collection = "account")
+@Entity
 public class Account {
 
     @Id
-    String mongoId;
-
     int userId;
     String userLogin;
     String email;
-    Map<String, String> urls;
 }

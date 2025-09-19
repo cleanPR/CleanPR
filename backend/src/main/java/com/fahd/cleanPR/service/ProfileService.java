@@ -5,26 +5,18 @@ import com.fahd.cleanPR.repository.ProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static java.lang.Integer.parseInt;
-
 @Service
 public class ProfileService {
 
-    @Autowired
-    private ProfileRepository profileRepository;
+    private final ProfileRepository profileRepository;
 
-    /**
-     * CASE 1: there might be an existing profile so we upsert using the unique mongoId
-     * CASE 2: no existing profile, so we can just insert
-     * */
+    @Autowired
+    public ProfileService(ProfileRepository profileRepository) {
+        this.profileRepository = profileRepository;
+    }
+
     public Profile updateOrSave(final Profile profile) {
-        return profileRepository.findByUserId(profile.getUserId())
-                .map(existingProfile -> {
-                        profile.setMongoId(existingProfile.getMongoId());
-                        return profileRepository.save(profile);
-                    }
-                )
-                .orElseGet(() -> profileRepository.save(profile));
+        return profileRepository.save(profile);
     }
 
     public Profile fetchUser(int userId) {

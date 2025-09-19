@@ -5,25 +5,27 @@ import com.fahd.cleanPR.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 
 @Service
 public class AccountService {
 
-    @Autowired
-    private AccountRepository accountRepository;
 
-    public Account saveOrUpdate(final Account account) {
-        return accountRepository.findByUserId(account.getUserId())
-                .map(existing -> {
-                        account.setMongoId(existing.getMongoId());
-                        return accountRepository.save(account);
-                    }
-                )
-                .orElseGet(() -> accountRepository.save(account));
+    private final AccountRepository accountRepository;
+
+    @Autowired
+    public AccountService(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
     }
 
-    public Optional<Account> findByUserId(int userId) {
-        return accountRepository.findByUserId(userId);
+    public Account saveOrUpdate(final Account account) {
+        return accountRepository.save(account);
+    }
+
+    public Account findById(int id) {
+        return accountRepository.findById(id).orElse(null);
+    }
+
+    public Account findByUserEmail(String email) {
+        return accountRepository.findByEmail(email).orElse(null);
     }
 }

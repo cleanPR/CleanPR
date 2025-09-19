@@ -1,9 +1,8 @@
 package com.fahd.cleanPR.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.annotation.Collation;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 @Builder
 @Data
@@ -11,12 +10,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "profile")
+@Entity
 public class Profile {
+
     @Id
-    private String mongoId;
     private int userId;
     private String login;
     private String avatarUrl;
-
 }

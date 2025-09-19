@@ -1,20 +1,23 @@
 package com.fahd.cleanPR.model;
 
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Repository {
+@Builder
+@Entity
+public class Installation {
 
-    String mongoId;
 
-    String userId;
-    String repoId;
-    List<String> repoFilePaths;
+    @Id
+    int installationId;
+    int userId;
+    String accessTokenUrl;
 }

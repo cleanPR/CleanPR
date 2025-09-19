@@ -18,28 +18,30 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 public class CustomOauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomOauth2SuccessHandler.class);
 
-    @Autowired
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
 
-    @Autowired
-    private AccountService accountService;
+    private final AccountService accountService;
 
-    @Autowired
-    private ProfileService profileService;
+    private final ProfileService profileService;
 
-    @Autowired
-    private JwtService jwtService;
+    private final JwtService jwtService;
 
     @Value("${client.url}")
     String CLIENT_URL;
+
+    @Autowired
+    public CustomOauth2SuccessHandler(AccountRepository accountRepository, AccountService accountService, ProfileService profileService, JwtService jwtService) {
+        this.accountRepository = accountRepository;
+        this.accountService = accountService;
+        this.profileService = profileService;
+        this.jwtService = jwtService;
+    }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -49,19 +51,16 @@ public class CustomOauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
             LOGGER.info("Authentication successful");
             OAuth2User oauth2User = (OAuth2User) authentication.getPrincipal();
 
-            Map<String, String> repoUrl = new HashMap<>();
-            repoUrl.put("repos_url", oauth2User.getAttribute("repos_url"));
-            repoUrl.put("organizations_url", oauth2User.getAttribute("organizations_url"));
 
             // 2) Building account and profile models
-            Account account = buildAccountModel(oauth2User, repoUrl);
+            Account account = buildAccountModel(oauth2User);
             Profile profile = buildProfile(oauth2User);
 
             // 3) saving user data
             Account savedAccount = accountService.saveOrUpdate(account);
+            Profile saveProfile = profileService.updateOrSave(profile);
             LOGGER.info("Saved user account for userId={}", savedAccount.getUserId());
 
-            Profile savedProfile = profileService.updateOrSave(profile);
 
             // 4) generating jwt for client API authentication
             String jwt = jwtService.generateToken(account);
@@ -106,12 +105,11 @@ public class CustomOauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
                 .build();
     }
 
-    public Account buildAccountModel(OAuth2User oauth2User, Map<String, String> repoUrl) {
+    public Account buildAccountModel(OAuth2User oauth2User) {
         return Account.builder()
                 .userId(oauth2User.getAttribute("id"))
                 .userLogin(oauth2User.getAttribute("login"))
                 .email(oauth2User.getAttribute("email"))
-                .urls(repoUrl)
                 .build();
     }
 

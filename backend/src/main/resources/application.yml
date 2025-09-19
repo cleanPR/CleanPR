@@ -8,26 +8,30 @@ spring:
       client:
         registration:
           github:
-            client-id: ${GITHUB_CLIENT_ID}
-            client-secret: ${GITHUB_CLIENT_SECRET}
+            client-id: ${gitHubClientId}
+            client-secret: ${gitHubClientSecret}
             scope:
               - read:user
               - user:email
-            redirect-uri: "https://03db62d1-2049-4d5d-a15a-9c68a075dd5d-00-3odpkv9xrdfc.picard.replit.dev:8081/login/oauth2/code/github"
-  data:
-    mongodb:
-      auto-index-creation: true
-      host: localhost
-      port: 27017
-      database: cleanpr
+  datasource:
+    url: jdbc:postgresql://localhost:5432/cleanpr
+    username: postgres
+    password: ${dbPassword}
+  jpa:
+    hibernate:
+      ddl-auto: update
 
 client:
-  url: https://03db62d1-2049-4d5d-a15a-9c68a075dd5d-00-3odpkv9xrdfc.picard.replit.dev:5000
+  url: http://localhost:3000
 
-jwt.secret.key: ${JWT_SECRET}
+jwt.secret.key: ${jwtSecret}
 
 server:
   port: 8081
+
+github:
+  appId: 1953390
+  key: C:\Users\fahda\Downloads\clean-pr.2025-09-15.private-key.pem
 
 
 

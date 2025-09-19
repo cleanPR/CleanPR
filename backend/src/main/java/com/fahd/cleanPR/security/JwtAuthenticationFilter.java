@@ -19,7 +19,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Optional;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -54,22 +53,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
             String jwtToken = jwtCookie.getValue();
-            String userId = jwtService.extractSubject(jwtToken);
+            String email = jwtService.extractSubject(jwtToken);
 
             // if the token is valid set the auth principle else redirect back to logIn
-            if (!jwtService.isTokenValid(jwtToken, userId)) {
+            if (!jwtService.isTokenValid(jwtToken, email)) {
                 filterChain.doFilter(request, response);
                 return;
             }
 
-            Optional<Account> account = accountService.findByUserId(Integer.parseInt(userId));
-            if (!account.isEmpty()) {
+            // check if the user account exists if not don't authenticate it
+
+            Account account = accountService.findByUserEmail(email);
+            if (account != null) {
+
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                        account.get(), null, Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
+                        account, null, Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
                 );
+
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
+
             filterChain.doFilter(request, response);
+
         } catch (Exception e) {
             LOGGER.error("failed while filtering out cookies, user is being redirected back to login");
             filterChain.doFilter(request, response);
