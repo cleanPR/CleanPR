@@ -1,0 +1,81 @@
+{
+    "action": "deleted",
+    "installation": {
+        "id": 86601233,
+        "client_id": "Iv23liWbDDtGiYsiPVtk",
+        "account": {
+            "login": "fahd209",
+            "id": 166452601,
+            "node_id": "U_kgDOCevdeQ",
+            "avatar_url": "https://avatars.githubusercontent.com/u/166452601?v=4",
+            "gravatar_id": "",
+            "url": "https://api.github.com/users/fahd209",
+            "html_url": "https://github.com/fahd209",
+            "followers_url": "https://api.github.com/users/fahd209/followers",
+            "following_url": "https://api.github.com/users/fahd209/following{/other_user}",
+            "gists_url": "https://api.github.com/users/fahd209/gists{/gist_id}",
+            "starred_url": "https://api.github.com/users/fahd209/starred{/owner}{/repo}",
+            "subscriptions_url": "https://api.github.com/users/fahd209/subscriptions",
+            "organizations_url": "https://api.github.com/users/fahd209/orgs",
+            "repos_url": "https://api.github.com/users/fahd209/repos",
+            "events_url": "https://api.github.com/users/fahd209/events{/privacy}",
+            "received_events_url": "https://api.github.com/users/fahd209/received_events",
+            "type": "User",
+            "user_view_type": "public",
+            "site_admin": false
+        },
+        "repository_selection": "selected",
+        "access_tokens_url": "https://api.github.com/app/installations/86601233/access_tokens",
+        "repositories_url": "https://api.github.com/installation/repositories",
+        "html_url": "https://github.com/settings/installations/86601233",
+        "app_id": 1953390,
+        "app_slug": "clean-pr",
+        "target_id": 166452601,
+        "target_type": "User",
+        "permissions": {
+            "contents": "read",
+            "metadata": "read",
+            "pull_requests": "write"
+        },
+        "events": [
+            "pull_request"
+        ],
+        "created_at": "2025-09-18T23:48:40.000-07:00",
+        "updated_at": "2025-09-18T23:50:19.000-07:00",
+        "single_file_name": null,
+        "has_multiple_single_files": false,
+        "single_file_paths": [],
+        "suspended_by": null,
+        "suspended_at": null
+    },
+    "repositories": [
+        {
+            "id": 792868472,
+            "node_id": "R_kgDOL0I2eA",
+            "name": "capstone-1",
+            "full_name": "fahd209/capstone-1",
+            "private": false
+        }
+    ],
+    "sender": {
+        "login": "fahd209",
+        "id": 166452601,
+        "node_id": "U_kgDOCevdeQ",
+        "avatar_url": "https://avatars.githubusercontent.com/u/166452601?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/fahd209",
+        "html_url": "https://github.com/fahd209",
+        "followers_url": "https://api.github.com/users/fahd209/followers",
+        "following_url": "https://api.github.com/users/fahd209/following{/other_user}",
+        "gists_url": "https://api.github.com/users/fahd209/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/fahd209/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/fahd209/subscriptions",
+        "organizations_url": "https://api.github.com/users/fahd209/orgs",
+        "repos_url": "https://api.github.com/users/fahd209/repos",
+        "events_url": "https://api.github.com/users/fahd209/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/fahd209/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+    }
+}
