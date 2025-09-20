@@ -6,16 +6,18 @@ import {
   AddRepoButton
 } from './styles/DashboardBody.styles'
 import { useAuth } from '../hooks/AuthContext';
+import {useState} from "react";
 
 function Repositories() {
   const { user } = useAuth()
-
-  const handleAddRepository = () => {
+    const [repositories, setRepositories] = useState([]);
+  const handleAddRepository = async () => {
     const url = `https://github.com/apps/clean-pr/installations/new?target_id=${user.userId}`
-    window.location.href=url
+      window.open(url, '_blank', 'width=800,height=600');
   }
 
   return (
+      <div>
     <RepositoriesTabWrapper>
       <RepositoriesTabHeading>
         <RepositoriesTabTitle>Repositories</RepositoriesTabTitle>
@@ -28,6 +30,11 @@ function Repositories() {
         </AddRepoButton>
       </RepositoriesTabHeading>
     </RepositoriesTabWrapper>
+          {repositories.length > 0 && <li> {repositories.map(repo => <li>
+
+          </li>)}</li>}
+      </div>
+
   )
 }
 

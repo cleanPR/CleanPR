@@ -1,13 +1,11 @@
 package com.fahd.cleanPR.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 @Data
 @Builder
@@ -17,12 +15,22 @@ import java.util.Date;
 public class PullRequest {
 
     @Id
+    @Column
     private int Id;
+    @Column
     private int repoId;
+    @Column
     private String title;
-    private String status;
-    private Date openedAt;
-    private Date reviewedAt;
-    private Date closedAt;
+    @Enumerated(EnumType.STRING)
+    @Column
+    private Status status;
+    @Column
+    @Temporal(TemporalType.TIMESTAMP)
+    private OffsetDateTime openedAt;
+    @Column
+    private OffsetDateTime reviewedAt;
+    @Column
+    private OffsetDateTime closedAt;
+    @Column
     private String url;
 }

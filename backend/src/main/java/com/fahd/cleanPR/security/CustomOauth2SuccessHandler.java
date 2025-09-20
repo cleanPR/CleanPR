@@ -9,6 +9,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 @Component
+@AllArgsConstructor
+
 public class CustomOauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomOauth2SuccessHandler.class);
@@ -53,8 +56,8 @@ public class CustomOauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
 
 
             // 2) Building account and profile models
-            Account account = buildAccountModel(oauth2User);
-            Profile profile = buildProfile(oauth2User);
+            Account account = createAccount(oauth2User);
+            Profile profile = createProfile(oauth2User);
 
             // 3) saving user data
             Account savedAccount = accountService.saveOrUpdate(account);
@@ -97,7 +100,7 @@ public class CustomOauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
         }
     }
 
-    public Profile buildProfile(OAuth2User oauth2User) {
+    public Profile createProfile(OAuth2User oauth2User) {
         return Profile.builder()
                 .userId(oauth2User.getAttribute("id"))
                 .login(oauth2User.getAttribute("login"))
@@ -105,7 +108,7 @@ public class CustomOauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
                 .build();
     }
 
-    public Account buildAccountModel(OAuth2User oauth2User) {
+    public Account createAccount(OAuth2User oauth2User) {
         return Account.builder()
                 .userId(oauth2User.getAttribute("id"))
                 .userLogin(oauth2User.getAttribute("login"))
