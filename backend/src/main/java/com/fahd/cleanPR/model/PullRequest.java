@@ -17,10 +17,14 @@ public class PullRequest {
     @Id
     @Column
     private int Id;
+    @ManyToOne
+    @JoinColumn(name="userId")
+    Profile user;
     @Column
     private int repoId;
     @Column
     private String title;
+
     @Enumerated(EnumType.STRING)
     @Column
     private Status status;

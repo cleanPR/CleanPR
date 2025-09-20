@@ -17,7 +17,11 @@ public class AccountService {
         this.accountRepository = accountRepository;
     }
 
-    public Account saveOrUpdate(final Account account) {
+    public Account saveAccount(final Account account) {
+        return accountRepository.save(account);
+    }
+
+    public Account updateAccount(final Account account){
         return accountRepository.save(account);
     }
 

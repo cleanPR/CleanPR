@@ -26,11 +26,11 @@ public class ProfileController {
         this.profileService = profileService;
     }
 
-    @GetMapping("")
+    @GetMapping()
     public ResponseEntity<Object> getProfile(Authentication authentication) {
         try {
             Account account = (Account) authentication.getPrincipal();
-            return ResponseEntity.ok(profileService.fetchUser(Integer.parseInt(account.getUserId())));
+            return ResponseEntity.ok(profileService.fetchUser(account.getUserId()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }

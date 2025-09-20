@@ -16,7 +16,7 @@ public class Account {
 
     @Id
     @Column
-    private String userId;
+    private int userId;
     @Column
     private String userLogin;
     @Column

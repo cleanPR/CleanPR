@@ -15,9 +15,15 @@ public class ProfileService {
         this.profileRepository = profileRepository;
     }
 
-    public Profile updateOrSave(final Profile profile) {
+    public Profile saveProfile(final Profile profile) {
         return profileRepository.save(profile);
     }
+
+    public Profile updateProfile(final Profile profile){
+        return profileRepository.save(profile);
+    }
+
+
 
     public Profile fetchUser(int userId) {
         return profileRepository.findByUserId(userId).orElseThrow();

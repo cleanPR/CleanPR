@@ -60,8 +60,8 @@ public class CustomOauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
             Profile profile = createProfile(oauth2User);
 
             // 3) saving user data
-            Account savedAccount = accountService.saveOrUpdate(account);
-            Profile saveProfile = profileService.updateOrSave(profile);
+            Account savedAccount = accountService.saveAccount(account);
+            Profile saveProfile = profileService.saveProfile(profile);
             LOGGER.info("Saved user account for userId={}", savedAccount.getUserId());
 
 
@@ -70,13 +70,14 @@ public class CustomOauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
             LOGGER.info("Token generated for userId={}", account.getUserId());
 
             // 5) create a http cookie use the jwt and redirect the user to the dash board
-            Cookie jwtCookie = new Cookie("jwt", jwt);
+            Cookie jwtCookie = new Cookie("jwt", String.valueOf(jwt));
             jwtCookie.setSecure(false);
             jwtCookie.setPath("/");
             jwtCookie.setHttpOnly(true);
             // getting the expiration date for the token in ms and converting it to seconds = 86,000 seconds = 24 hours
-            jwtCookie.setMaxAge((int) jwtService.extractExpirationDate(jwt).getTime() / 1000);
+            jwtCookie.setMaxAge(24 * 60 * 60);
             response.addCookie(jwtCookie);
+
 
 
             // remove JSESSIONID because we'll use the jwt as a cookie
