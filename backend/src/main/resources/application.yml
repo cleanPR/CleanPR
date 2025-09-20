@@ -15,8 +15,9 @@ spring:
               - user:email
   datasource:
     url: jdbc:postgresql://localhost:5432/cleanpr
-    username: postgres
-    password: ${dbPassword}
+    username: cleanpr
+    password: "@clean-pr-gang-209"
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: update
