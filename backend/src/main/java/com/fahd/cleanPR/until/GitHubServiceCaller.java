@@ -1,5 +1,6 @@
 package com.fahd.cleanPR.until;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -14,6 +15,7 @@ import java.util.Map;
 import static com.fahd.cleanPR.CleanPrConstants.*;
 
 @Service
+@AllArgsConstructor
 public class GitHubServiceCaller {
 
     @Autowired

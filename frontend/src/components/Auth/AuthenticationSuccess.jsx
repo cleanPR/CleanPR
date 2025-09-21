@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
+import {useNavigate} from "react-router-dom";
 
 const Wrapper = styled.div`
   min-height: 100vh;
@@ -52,8 +53,10 @@ const SuccessText = styled.h2`
   animation: ${pop} 0.7s 0.2s cubic-bezier(0.23, 1, 0.32, 1);
 `;
 
-function AuthenticationSuccess() {
 
+
+function AuthenticationSuccess() {
+const navigate = useNavigate();
 
   /**
    * when the page loads post an event message to the opener (parent)
@@ -69,6 +72,7 @@ function AuthenticationSuccess() {
                 window.location.origin
             )
         }
+        navigate("/authenticate")
     }, [])
 
   return (
