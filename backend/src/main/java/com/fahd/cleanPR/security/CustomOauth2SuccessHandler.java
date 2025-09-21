@@ -70,7 +70,7 @@ public class CustomOauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
             LOGGER.info("Token generated for userId={}", account.getUserId());
 
             // 5) create a http cookie use the jwt and redirect the user to the dash board
-            Cookie jwtCookie = new Cookie("jwt", String.valueOf(jwt));
+            Cookie jwtCookie = new Cookie("jwt", jwt);
             jwtCookie.setSecure(false);
             jwtCookie.setPath("/");
             jwtCookie.setHttpOnly(true);
