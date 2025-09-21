@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Wrapper = styled.div`
   min-height: 100vh;
@@ -55,25 +55,23 @@ const SuccessText = styled.h2`
 
 
 
-function AuthenticationSuccess() {
-const navigate = useNavigate();
-
-  /**
-   * when the page loads post an event message to the opener (parent)
-   * because the authentication was succeful and the pop can be closed
-   * after the authentication was successfull
+/**
+   * the user will be redirected this component 
+   * after a successfult authentication in the 
+   * backend.
    */
-    useEffect(() => {
-        if (window.opener) {
-            window.opener.postMessage(
-                {
-                    type: "auth-success"
-                },
-                window.location.origin
-            )
-        }
-        navigate("/authenticate")
-    }, [])
+
+function AuthenticationSuccess() {
+  const navigate = useNavigate();
+
+  // setting timeout to let
+  // the animation finish
+  useEffect(() => {
+    setTimeout(() => {
+      navigate("/authenticate")
+    }, 1500)
+    
+  }, [])
 
   return (
     <Wrapper>
@@ -83,7 +81,7 @@ const navigate = useNavigate();
           <path d="M14 27l8 8 16-16" />
         </CheckMark>
       </SuccessCircle>
-      
+
       <SuccessText>Authentication Successful!</SuccessText>
 
     </Wrapper>

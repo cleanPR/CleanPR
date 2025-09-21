@@ -21,7 +21,9 @@ function OAuthCallBack() {
       // on success store the user in local storage and navigate to dashboard
       .then(res => {
         setUser(res.data);
-        navigate("/dashboard");
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 1000)
       })
 
       // on error navigate back to login
