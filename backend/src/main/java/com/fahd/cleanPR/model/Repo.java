@@ -1,14 +1,12 @@
 package com.fahd.cleanPR.model;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.checkerframework.checker.units.qual.C;
 
 @Data
 @NoArgsConstructor
@@ -19,9 +17,14 @@ public class Repo {
 
     @Id
     int repoId;
-    @ManyToOne
-    @JoinColumn(name="userId")
-    Profile userProfile;
+
+    @Column
+    int userId;
+
+    @Column
     int installationId;
+
+    @Column
+    String repoName;
 
 }
