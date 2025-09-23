@@ -2,6 +2,7 @@ package com.fahd.cleanPR.controller;
 
 import com.fahd.cleanPR.handler.BaseEventHandler;
 import com.fahd.cleanPR.handler.InstallationEventHandler;
+import com.fahd.cleanPR.handler.RepoEventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,23 @@ public class GitHubWebhooks {
 
     private InstallationEventHandler installationEventHandler;
 
+    private RepoEventHandler repoEventHandler;
 
+
+    @Autowired
+    public GitHubWebhooks(
+            final InstallationEventHandler installationEventHandler,
+            final RepoEventHandler repoEventHandler
+    ) {
+        this.installationEventHandler = installationEventHandler;
+        this.repoEventHandler = repoEventHandler;
+        this.eventDispatcher = Map.of(
+                "created", installationEventHandler,
+                "deleted", installationEventHandler,
+                "added", repoEventHandler,
+                "removed", repoEventHandler
+        );
+    }
 
     /**
      * EventHandlerMapping={
@@ -34,17 +51,6 @@ public class GitHubWebhooks {
      *     prOpened or prClosed -> prEventHandler
      * }
      * */
-    @Autowired
-    public GitHubWebhooks(
-            final InstallationEventHandler installationEventHandler
-    ) {
-        this.installationEventHandler = installationEventHandler;
-        this.eventDispatcher = Map.of(
-                "created", installationEventHandler,
-                "deleted", installationEventHandler
-        );
-    }
-
     @PostMapping("/github")
     public void gitHubWebhookEvent(@RequestBody Map<String, Object> webHookPayload) {
 

@@ -28,11 +28,9 @@ public class InstallationEventHandler extends BaseEventHandler {
         this.repoRepository = repoRepository;
     }
 
-
     @Override
     public void triggerEvent(Map<String, Object> webHookPayload, String action) {
         logInfo(String.format("triggering event, action={ %s },", action));
-
         try {
             Map<String, Object> installationData = (Map<String, Object>) webHookPayload.get("installation");
             List<Map<String, Object>> repositories = (List<Map<String, Object>>) webHookPayload.get("repositories");
@@ -51,8 +49,6 @@ public class InstallationEventHandler extends BaseEventHandler {
         } catch (Exception e) {
             logError(String.format("action={ %s }, exception={ %s }", action, e.getMessage()));
         }
-
-
     }
 
     /**
@@ -62,23 +58,18 @@ public class InstallationEventHandler extends BaseEventHandler {
      * TODO: make it also delete saved pr's when we add pr handling
      * */
     private void handleUninstall(int installationId) {
-
         installationRepository.deleteById(installationId);
-
         repoRepository.deleteAllByInstallationId(installationId);
-
     }
 
     private void handleInstallation(Map<String, Object> installationData, List<Map<String, Object>> repositories) {
 
         // 1) create data models
         Installation installation = createInstallation(installationData);
-
         List<Repo> repoList = createRepoList(repositories, installation.getUserId(), installation.getInstallationId());
 
         //2) save to db
         installationRepository.save(installation);
-
         repoRepository.saveAll(repoList);
 
     }
@@ -86,11 +77,10 @@ public class InstallationEventHandler extends BaseEventHandler {
     private List<Repo> createRepoList(List<Map<String, Object>> repositories, int userId, int installationId) {
 
         return repositories.stream()
-
                 // mapping each Map to repo model
                 .map(repo -> {
                     int repoId = (int) repo.get("id");
-                    String repoName = (String) repo.get("name");
+                    String repoName = (String) repo.get("full_name");
 
                     return Repo.builder()
                             .repoId(repoId)
@@ -104,7 +94,6 @@ public class InstallationEventHandler extends BaseEventHandler {
     }
 
     public Installation createInstallation(Map<String, Object> installationData) {
-
         Map<String, Object> account =  (Map<String, Object>) installationData.get("account");
         int installationId = (int) installationData.get("id");
         int userId = (int) account.get("id");
