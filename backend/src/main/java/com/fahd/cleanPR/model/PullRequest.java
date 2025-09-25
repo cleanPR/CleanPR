@@ -16,20 +16,25 @@ public class PullRequest {
 
     @Id
     @Column
-    private int Id;
+    private long Id;
 
-    @ManyToOne
-    @JoinColumn(name="userId")
-    Profile user;
+    @Column
+    private String title;
+
+    @Column
+    private int repoOwnerId;
+
+    @Column
+    private int authorId;
+
+    @Column
+    private String authorName;
 
     @Column
     private int repoId;
 
     @Column
     private int installationId;
-
-    @Column
-    private String title;
 
     @Enumerated(EnumType.STRING)
     @Column

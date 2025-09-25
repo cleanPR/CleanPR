@@ -2,6 +2,7 @@ package com.fahd.cleanPR.controller;
 
 import com.fahd.cleanPR.handler.BaseEventHandler;
 import com.fahd.cleanPR.handler.InstallationEventHandler;
+import com.fahd.cleanPR.handler.PullRequestHandler;
 import com.fahd.cleanPR.handler.RepoEventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,19 +29,24 @@ public class GitHubWebhooks {
 
     private RepoEventHandler repoEventHandler;
 
+    private PullRequestHandler pullRequestHandler;
+
 
     @Autowired
     public GitHubWebhooks(
             final InstallationEventHandler installationEventHandler,
-            final RepoEventHandler repoEventHandler
-    ) {
+            final RepoEventHandler repoEventHandler,
+            final PullRequestHandler pullRequestHandler) {
         this.installationEventHandler = installationEventHandler;
         this.repoEventHandler = repoEventHandler;
+        this.pullRequestHandler = pullRequestHandler;
         this.eventDispatcher = Map.of(
                 "created", installationEventHandler,
                 "deleted", installationEventHandler,
                 "added", repoEventHandler,
-                "removed", repoEventHandler
+                "removed", repoEventHandler,
+                "closed", pullRequestHandler,
+                "opened", pullRequestHandler
         );
     }
 
@@ -53,11 +59,9 @@ public class GitHubWebhooks {
      * */
     @PostMapping("/github")
     public void gitHubWebhookEvent(@RequestBody Map<String, Object> webHookPayload) {
-
         // mapping the handler based on the action
         String action = (String) webHookPayload.get("action");
         baseEventHandler = eventDispatcher.getOrDefault(action, null);
-
         if (baseEventHandler != null) {
             baseEventHandler.triggerEvent(webHookPayload, action);
         } else {
