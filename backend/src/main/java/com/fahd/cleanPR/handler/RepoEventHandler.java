@@ -20,17 +20,17 @@ public class RepoEventHandler extends BaseEventHandler {
     }
 
     @Override
-    public void triggerEvent(Map<String, Object> webPayload, String action) {
+    public void triggerEvent(Map<String, Object> webHookPayload, String action) {
         logInfo(String.format("event triggered for action={ %s }", action));
 
-        Map<String, Object> installationData = (Map<String, Object>) webPayload.get("installation");
+        Map<String, Object> installationData = (Map<String, Object>) webHookPayload.get("installation");
         Map<String, Object> account = (Map<String, Object>) installationData.get("account");
 
         int installationId = (int) installationData.get("id");
         int userId = (int) account.get("id");
 
-        List<Map<String, Object>> repositoriesAdded = (List<Map<String, Object>>) webPayload.getOrDefault("repositories_added", null);
-        List<Map<String, Object>> repositoriesRemoved = (List<Map<String, Object>>) webPayload.getOrDefault("repositories_removed", null);
+        List<Map<String, Object>> repositoriesAdded = (List<Map<String, Object>>) webHookPayload.getOrDefault("repositories_added", null);
+        List<Map<String, Object>> repositoriesRemoved = (List<Map<String, Object>>) webHookPayload.getOrDefault("repositories_removed", null);
 
         if ((repositoriesAdded == null || repositoriesAdded.isEmpty())
                 && (repositoriesRemoved == null || repositoriesRemoved.isEmpty())) {
@@ -68,6 +68,7 @@ public class RepoEventHandler extends BaseEventHandler {
                     .toList();
             repoRepository.saveAll(addedRepos);
         } else {
+            // TODO: get all pull requests related to that pr and delete them as well
             // map the removed repos to there ideas and delete them from the db
             List<Integer> repoIdsToDelete = repositories.stream()
                     .map(repo -> (int) repo.get("id"))
