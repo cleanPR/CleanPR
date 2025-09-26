@@ -18,6 +18,9 @@ spring:
     username: ${spring.application.name}
     password: ${spring.datasource.password}
     driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 5   # keep this small for Supabase free/small tiers
+      minimum-idle: 1
   jpa:
     hibernate:
       ddl-auto: update   # creates/updates tables automatically
