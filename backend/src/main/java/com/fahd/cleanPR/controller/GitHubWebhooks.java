@@ -67,7 +67,6 @@ public class GitHubWebhooks {
         } else {
             LOGGER.info("no handler for action= {}", action);
         }
-
     }
 
 }

@@ -74,11 +74,10 @@ public class CustomOauth2SuccessHandler extends SimpleUrlAuthenticationSuccessHa
             jwtCookie.setSecure(false);
             jwtCookie.setPath("/");
             jwtCookie.setHttpOnly(true);
+
             // getting the expiration date for the token in ms and converting it to seconds = 86,000 seconds = 24 hours
             jwtCookie.setMaxAge(24 * 60 * 60);
             response.addCookie(jwtCookie);
-
-
 
             // remove JSESSIONID because we'll use the jwt as a cookie
             Cookie jsessionCookie = new Cookie("JSESSIONID", null);

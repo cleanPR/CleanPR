@@ -1,8 +1,8 @@
 package com.fahd.cleanPR.handler;
 
 import com.fahd.cleanPR.model.Repo;
+import com.fahd.cleanPR.repository.PullRequestRepository;
 import com.fahd.cleanPR.repository.RepoRepository;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,9 +14,13 @@ public class RepoEventHandler extends BaseEventHandler {
 
     private final RepoRepository repoRepository;
 
+    private final PullRequestRepository pullRequestRepository;
+
     @Autowired
-    public RepoEventHandler(final RepoRepository repoRepository) {
+    public RepoEventHandler(final RepoRepository repoRepository,
+                            final PullRequestRepository pullRequestRepository) {
         this.repoRepository = repoRepository;
+        this.pullRequestRepository = pullRequestRepository;
     }
 
     @Override
@@ -32,21 +36,28 @@ public class RepoEventHandler extends BaseEventHandler {
         List<Map<String, Object>> repositoriesAdded = (List<Map<String, Object>>) webHookPayload.getOrDefault("repositories_added", null);
         List<Map<String, Object>> repositoriesRemoved = (List<Map<String, Object>>) webHookPayload.getOrDefault("repositories_removed", null);
 
+        // if both lists are empty don't do anything
         if ((repositoriesAdded == null || repositoriesAdded.isEmpty())
                 && (repositoriesRemoved == null || repositoriesRemoved.isEmpty())) {
             logInfo(String.format("no repositories added or removed for this installation={ %d }", installationId));
             return;
         }
 
+        // if there added repositories in the payload set is added to true
         if (repositoriesAdded != null && !repositoriesAdded.isEmpty()) {
             handleAddOrRemoveRepos(repositoriesAdded, installationId, userId, true);
         }
 
+        // if there are no added repositories to the payload set is added to false
         if (repositoriesRemoved != null && !repositoriesRemoved.isEmpty()) {
             handleAddOrRemoveRepos(repositoriesRemoved, installationId, userId, false);
         }
     }
 
+    /**
+     * checks if repositories were added or not
+     * and executes action based on the boolean
+     * */
     private void handleAddOrRemoveRepos(List<Map<String, Object>> repositories,
                                        int installationId,
                                        int userId,
@@ -67,13 +78,30 @@ public class RepoEventHandler extends BaseEventHandler {
                     })
                     .toList();
             repoRepository.saveAll(addedRepos);
-        } else {
-            // TODO: get all pull requests related to that pr and delete them as well
-            // map the removed repos to there ideas and delete them from the db
-            List<Integer> repoIdsToDelete = repositories.stream()
-                    .map(repo -> (int) repo.get("id"))
+            return;
+        }
+
+        /*
+         * when a user removes a repo from installation
+         * we'll delete the repo and also delete all
+         * repo pr from our db
+         * */
+        // map the removed repos to there ideas and delete them from the db
+        List<Integer> repoIdsToDelete = repositories.stream()
+                .map(repo -> (int) repo.get("id"))
+                .toList();
+
+        repoRepository.deleteAllById(repoIdsToDelete);
+
+        // getting every pull request for each repository and deleting it
+        for (Integer repoId : repoIdsToDelete) {
+            List<Long> pullRequestIds = pullRequestRepository.findAllByRepoId(repoId)
+                    .stream().map(pr -> pr.getId())
                     .toList();
-            repoRepository.deleteAllById(repoIdsToDelete);
+
+            // deletes all pr's by repoId
+            pullRequestRepository.deleteAllByRepoId(repoId);
+
         }
     }
 }
