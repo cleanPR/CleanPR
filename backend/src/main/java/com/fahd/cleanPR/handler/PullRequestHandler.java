@@ -10,6 +10,7 @@ import com.fahd.cleanPR.repository.RepoRepository;
 import com.fahd.cleanPR.until.GitHubServiceCaller;
 import com.fahd.cleanPR.until.OpenAiCaller;
 import com.fahd.cleanPR.until.TokenService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -99,13 +100,13 @@ public class PullRequestHandler extends BaseEventHandler{
             throw new EntityNotFoundException("Repo not found");
         }
 
-        // 3) get github api access token
+        // 3) get the github api access token
         String accessToken = tokenService.getAccessToken(installation.get().getAccessTokenUrl());
 
         // 4) fetch the pr file paths
         int pullRequestNumber = (int) webHookPayload.get("number");
         String url = String.format("/repos/%s/pulls/%d/files", repo.get().getRepoName(), pullRequestNumber);
-        JsonNode filePaths = gitHubServiceCaller.fetchFromGitHub(accessToken, url);
+        JsonNode filePaths = gitHubServiceCaller.fetchFilePaths(accessToken, url);
 
         /**
          * The file pathObjects will only contain the code patches
@@ -114,24 +115,46 @@ public class PullRequestHandler extends BaseEventHandler{
          * */
         List<Map<String, Object>> filePathObjects = convertFilePathJsonToListOfMap(filePaths);
         List<String> contentUrls = getContentUrl(filePathObjects);
-        List<String> codePatches = getCodePatches(filePathObjects);
 
         // 5) get all the files in pr and the code diff
         List<String> prFiles = gitHubServiceCaller.fetchFileContent(contentUrls, accessToken);
+        List<String> codePatches = getCodePatches(filePathObjects);
+
 
         // 6) prompt chatgpt for a code summary and code comments
-        String pullRequestSummary = openAiCaller.generatePullRequestSummary(codePatches, prFiles);
-        List<Map<String, String>> pullRequestComments = new ArrayList<>();
+        String pullRequestSummary = openAiCaller.reviewCode(codePatches, prFiles, "summary");
+        String codeCommentsJson = openAiCaller.reviewCode(codePatches, prFiles, "comments");
+        List<Map<String, Object>> codeCommentsList = convertJsonCommentsToMap(codeCommentsJson);
 
         // 7) post chat gpts response in the pr
         String codeSummaryReviewUrl = String.format("/repos/%s/pulls/%d/reviews", repo.get().getRepoName(), pullRequestNumber);
-        gitHubServiceCaller.postPrSummary(codeSummaryReviewUrl, pullRequestSummary, accessToken);
+        gitHubServiceCaller.postReview(codeSummaryReviewUrl, pullRequestSummary, codeCommentsList, accessToken);
 
         // 8) change the status of pr to reviewed
-        PullRequest reviewedPR = pullRequestRepository.findById(pullRequest.getRepoId()).get();
-        reviewedPR.setStatus(Status.REVIEWED);
-        pullRequestRepository.save(reviewedPR);
+        Optional<PullRequest> reviewedPR = pullRequestRepository.findById(pullRequest.getId());
+        if (!reviewedPR.isEmpty()) {
+            reviewedPR.get().setStatus(Status.REVIEWED);
+            pullRequestRepository.save(reviewedPR.get());
+        } else {
+            throw new EntityNotFoundException("PullRequest not found");
+        }
 
+
+    }
+
+    private List<Map<String, Object>> convertJsonCommentsToMap(String codeCommentsJson) throws JsonProcessingException {
+        String parsedJson = codeCommentsJson.strip().replace("```json", "").replace("```", "");
+
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonNode = mapper.readTree(parsedJson);
+        List<Map<String, Object>> commentList = new ArrayList<>();
+
+        for (JsonNode commentNode : jsonNode) {
+            Map<String, Object> comment = mapper.convertValue(commentNode, new TypeReference<Map<String, Object>>() {});
+            commentList.add(comment);
+        }
+
+        return commentList;
     }
 
     // adding all the code patches to a list

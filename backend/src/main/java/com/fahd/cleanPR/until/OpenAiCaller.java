@@ -3,7 +3,12 @@ package com.fahd.cleanPR.until;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static com.fahd.cleanPR.AiSystemMessages.COMMENT_ACTION_SYSTEM_MESSAGE;
+import static com.fahd.cleanPR.AiSystemMessages.SUMMARY_ACTION_SYSTEM_MESSAGE;
 
 @Service
 public class OpenAiCaller {
@@ -19,8 +24,8 @@ public class OpenAiCaller {
      * based on the user changes in the
      * pull request
      * */
-    public String generatePullRequestSummary(List<String> codePatches, List<String> prFiles) {
-        String systemMessage = summarySystemMessage();
+    public String reviewCode(List<String> codePatches, List<String> prFiles, String action) {
+        String systemMessage = getSystemMessage(action);
 
         String userMessage = """
                 """;
@@ -47,24 +52,21 @@ public class OpenAiCaller {
     }
 
 
-    public String summarySystemMessage() {
-        return """
-                you are a Senior Software Engineer who reviews pull requests
-                
-                instruction: 
-                    you will be given a pull request code patch and the pull request files.
-                    you will look through the code patches and analyze them carefully. 
-                    your goal is to generate comprehensive summary that explains
-                    what is going on in the pull request (scope = (features, fixes, code enhancements)) 
-                    you will mention any code improvements only if there is any.
-                    you will mention bugs only if there is any.
-                    
-                    your response will be as follow
-                    
-                Your response:
-                    you will respond in markdown, no emoji's and the markdown will 
-                    look professional like a senior engineer just wrote it.
-                """;
+    private String getSystemMessage(String action) {
+        Map<String, String> systemMessages = new HashMap<>();
+
+        // code summary system message
+        systemMessages.put(
+                "summary",
+                SUMMARY_ACTION_SYSTEM_MESSAGE
+        );
+
+        systemMessages.put(
+                "comments",
+                COMMENT_ACTION_SYSTEM_MESSAGE
+        );
+
+        return systemMessages.get(action);
     }
 
 }

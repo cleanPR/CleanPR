@@ -30,7 +30,7 @@ public class GitHubServiceCaller {
         this.restTemplate = restTemplate;
     }
 
-    public JsonNode fetchFromGitHub(String accessToken, String uri) throws JsonProcessingException {
+    public JsonNode fetchFilePaths(String accessToken, String uri) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set(AUTHORIZATION, BEARER + accessToken);
@@ -81,16 +81,17 @@ public class GitHubServiceCaller {
         return fileContent;
     }
 
-    public void postPrSummary(String url, String summary, String accessToken) {
+    public void postReview(String url, String summary, List<Map<String, Object>> codeCommentList, String accessToken) {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set("Authorization", BEARER + accessToken);
         httpHeaders.set("User-Agent", "clean-pr/1.0");
         httpHeaders.set("Accept", "application/vnd.github+json");
-        Map<String, String> body = new HashMap<>();
+        Map<String, Object> body = new HashMap<>();
         body.put("body", summary);
         body.put("event", "COMMENT");
+        body.put("comments", codeCommentList);
 
-        HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(body, httpHeaders);
+        HttpEntity<Map<String, Object>> httpEntity = new HttpEntity<>(body, httpHeaders);
         ResponseEntity<String> response = restTemplate.exchange(
                 url,
                 HttpMethod.POST,

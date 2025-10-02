@@ -5,6 +5,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PullRequestRepository extends JpaRepository<PullRequest, Integer> {
 
@@ -12,13 +13,13 @@ public interface PullRequestRepository extends JpaRepository<PullRequest, Intege
     void deleteAllByInstallationId(int installationId);
 
     @Transactional
-    void deleteByRepoId(int repoId);
+    Optional<PullRequest> findById(long id);
+
+    @Transactional
+    Optional<PullRequest> findByRepoId(int repoId);
 
     @Transactional
     List<PullRequest> findAllByRepoId(int repoId);
-
-    @Transactional
-    void deleteById(long id);
 
     @Transactional
     void deleteAllByRepoId(int repoId);
