@@ -36,64 +36,46 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws IOException, ServletException {
-        try {
-            Cookie[] cookies = request.getCookies();
-            Cookie jwtCookie = null;
-            if (cookies != null) {
-                jwtCookie = Arrays.stream(request.getCookies())
-                        .filter(cookie -> cookie.getName().equals("jwt"))
-                        .findFirst()
-                        .orElse(null);
-            }
-
-            // if the cookie is expired or does not exist remove it and redirect the user back to the login
-            if (jwtCookie == null) {
-                filterChain.doFilter(request, response);
-                return;
-            }
-
-            String jwtToken = jwtCookie.getValue();
-            String email = jwtService.extractSubject(jwtToken);
-
-            // if the token is valid set the auth principle else redirect back to logIn
-            if (!jwtService.isTokenValid(jwtToken, email)) {
-                filterChain.doFilter(request, response);
-                return;
-            }
-
-            // check if the user account exists if not don't authenticate it
-
-            Account account = accountService.findByUserEmail(email);
-            if (account != null) {
-
-                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                        account, null, Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
-                );
-
-                SecurityContextHolder.getContext().setAuthentication(auth);
-            }
-
-            filterChain.doFilter(request, response);
-
-        } catch (Exception e) {
-            LOGGER.error("failed while filtering out cookies, user is being redirected back to login");
-            filterChain.doFilter(request, response);
+        Cookie[] cookies = request.getCookies();
+        Cookie jwtCookie = null;
+        if (cookies != null) {
+            jwtCookie = Arrays.stream(cookies)
+                    .filter(cookie -> cookie.getName().equals("jwt"))
+                    .findFirst()
+                    .orElse(null);
         }
+
+        // if the cookie is expired or does not exist remove it and redirect the user back to the login
+        if (jwtCookie == null) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        String jwtToken = jwtCookie.getValue();
+        String email = jwtService.extractSubject(jwtToken);
+
+        // if the token is valid set the auth principle else redirect back to logIn
+        if (!jwtService.isTokenValid(jwtToken, email)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // check if the user account exists if not don't authenticate it
+
+        Account account = accountService.findByUserEmail(email);
+        if (account != null) {
+
+            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                    account, null, Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
+            );
+
+            SecurityContextHolder.getContext().setAuthentication(auth);
+        }
+
+        filterChain.doFilter(request, response);
+
+        LOGGER.error("failed while filtering out cookies, user is being redirected back to login");
     }
 
-    public Cookie buildEmptyCookie() {
-        Cookie cookie = new Cookie("jwt", null) {{
-            setPath("/");
-            setMaxAge(0);
-            setHttpOnly(true);
-            setSecure(false);
-        }};
-        return cookie;
-    }
 
-    public void redirectBackToLogin(final HttpServletResponse response) throws IOException {
-        Cookie cookie = buildEmptyCookie();
-        response.addCookie(cookie);
-        response.sendRedirect("http://localhost:3000");
-    }
 }

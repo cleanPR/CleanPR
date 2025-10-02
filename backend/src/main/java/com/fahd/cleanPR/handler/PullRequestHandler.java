@@ -8,12 +8,15 @@ import com.fahd.cleanPR.repository.InstallationRepository;
 import com.fahd.cleanPR.repository.PullRequestRepository;
 import com.fahd.cleanPR.repository.RepoRepository;
 import com.fahd.cleanPR.until.GitHubServiceCaller;
+import com.fahd.cleanPR.until.OpenAiCaller;
 import com.fahd.cleanPR.until.TokenService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Component;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -34,19 +37,24 @@ public class PullRequestHandler extends BaseEventHandler{
     private final InstallationRepository  installationRepository;
 
     private final RepoRepository repoRepository;
+
     private final GitHubServiceCaller gitHubServiceCaller;
+
+    private final OpenAiCaller openAiCaller;
 
     public PullRequestHandler(final PullRequestRepository pullRequestRepository,
                               final TokenService tokenService,
                               final InstallationRepository installationRepository,
                               final RepoRepository repoRepository,
-                              final GitHubServiceCaller gitHubServiceCaller) {
+                              final GitHubServiceCaller gitHubServiceCaller,
+                              final OpenAiCaller openAiCaller) {
 
         this.pullRequestRepository = pullRequestRepository;
         this.tokenService = tokenService;
         this.installationRepository = installationRepository;
         this.repoRepository = repoRepository;
         this.gitHubServiceCaller = gitHubServiceCaller;
+        this.openAiCaller = openAiCaller;
     }
 
     @Override
@@ -76,8 +84,9 @@ public class PullRequestHandler extends BaseEventHandler{
         // 2) insert to db
         pullRequestRepository.save(pullRequest);
 
+        // the installation and repo are needed for installation and repo specific information
+        // like the access token url or the repo full name
         Optional<Installation> installation = Optional.of(installationRepository.getReferenceById(pullRequest.getInstallationId()));
-
         Optional<Repo> repo = repoRepository.findById(pullRequest.getRepoId());
 
         if (installation.isEmpty()) {
@@ -87,6 +96,7 @@ public class PullRequestHandler extends BaseEventHandler{
 
         if (repo.isEmpty()) {
             logError(String.format("installation not found for pullRequestId={ %s }, installationI={ %s }", pullRequest.getId(), pullRequest.getInstallationId()));
+            throw new EntityNotFoundException("Repo not found");
         }
 
         // 3) get github api access token
@@ -97,18 +107,30 @@ public class PullRequestHandler extends BaseEventHandler{
         String url = String.format("/repos/%s/pulls/%d/files", repo.get().getRepoName(), pullRequestNumber);
         JsonNode filePaths = gitHubServiceCaller.fetchFromGitHub(accessToken, url);
 
+        /**
+         * The file pathObjects will only contain the code patches
+         * but not all the pr files so we have to extract
+         * the content urls and download the pr file
+         * */
         List<Map<String, Object>> filePathObjects = convertFilePathJsonToListOfMap(filePaths);
-        List<String> rawUrls = getContentUrl(filePathObjects);
+        List<String> contentUrls = getContentUrl(filePathObjects);
         List<String> codePatches = getCodePatches(filePathObjects);
 
         // 5) get all the files in pr and the code diff
-        List<String> prFiles = gitHubServiceCaller.fetchFileContent(rawUrls, accessToken);
+        List<String> prFiles = gitHubServiceCaller.fetchFileContent(contentUrls, accessToken);
 
         // 6) prompt chatgpt for a code summary and code comments
+        String pullRequestSummary = openAiCaller.generatePullRequestSummary(codePatches, prFiles);
+        List<Map<String, String>> pullRequestComments = new ArrayList<>();
 
         // 7) post chat gpts response in the pr
+        String codeSummaryReviewUrl = String.format("/repos/%s/pulls/%d/reviews", repo.get().getRepoName(), pullRequestNumber);
+        gitHubServiceCaller.postPrSummary(codeSummaryReviewUrl, pullRequestSummary, accessToken);
 
         // 8) change the status of pr to reviewed
+        PullRequest reviewedPR = pullRequestRepository.findById(pullRequest.getRepoId()).get();
+        reviewedPR.setStatus(Status.REVIEWED);
+        pullRequestRepository.save(reviewedPR);
 
     }
 
@@ -139,7 +161,15 @@ public class PullRequestHandler extends BaseEventHandler{
      * */
     private List<String> getContentUrl(List<Map<String, Object>> filePaths) {
         return filePaths.stream()
-                .map(obj -> (String) obj.get("contents_url"))
+                .map(obj -> {
+                   String url = (String) obj.get("contents_url");
+
+                   if (url.contains("%2F")) {
+                       String decodedUrl = URLDecoder.decode(url, StandardCharsets.UTF_8);
+                       return decodedUrl;
+                   }
+                   return url;
+                } )
                 .toList();
     }
 
@@ -161,7 +191,6 @@ public class PullRequestHandler extends BaseEventHandler{
         int installationId = (int) installation.get("id");
         String url = (String) pullRequest.get("html_url");
         String openedAt = (String) pullRequest.get("created_at");
-        String apiUrl = (String) pullRequest.get("url");
 
         return PullRequest.builder()
                 .Id(pullRequestId)

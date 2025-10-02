@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -78,6 +79,25 @@ public class GitHubServiceCaller {
         }
 
         return fileContent;
+    }
+
+    public void postPrSummary(String url, String summary, String accessToken) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.set("Authorization", BEARER + accessToken);
+        httpHeaders.set("User-Agent", "clean-pr/1.0");
+        httpHeaders.set("Accept", "application/vnd.github+json");
+        Map<String, String> body = new HashMap<>();
+        body.put("body", summary);
+        body.put("event", "COMMENT");
+
+        HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(body, httpHeaders);
+        ResponseEntity<String> response = restTemplate.exchange(
+                url,
+                HttpMethod.POST,
+                httpEntity, String.class
+        );
+
+
     }
 
 }
