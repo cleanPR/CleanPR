@@ -49,7 +49,7 @@
   "repository_selection" : "selected",
   "repositories_added" : [ ],
   "repositories_removed" : [ {
-    "id" : 873798071,
+    "re" : 873798071,
     "node_id" : "R_kgDONBUZtw",
     "name" : "Bay-Area-Flavors",
     "full_name" : "fahd209/Bay-Area-Flavors",
