@@ -81,24 +81,40 @@ public class GitHubServiceCaller {
         return fileContent;
     }
 
-    public void postReview(String url, String summary, List<Map<String, Object>> codeCommentList, String accessToken) {
+    public ResponseEntity<String> postReview(String url, String summary, List<Map<String, Object>> codeCommentList, String accessToken) {
+        ResponseEntity<String> response = null;
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set("Authorization", BEARER + accessToken);
         httpHeaders.set("User-Agent", "clean-pr/1.0");
         httpHeaders.set("Accept", "application/vnd.github+json");
-        Map<String, Object> body = new HashMap<>();
-        body.put("body", summary);
-        body.put("event", "COMMENT");
-        body.put("comments", codeCommentList);
 
-        HttpEntity<Map<String, Object>> httpEntity = new HttpEntity<>(body, httpHeaders);
-        ResponseEntity<String> response = restTemplate.exchange(
-                url,
-                HttpMethod.POST,
-                httpEntity, String.class
-        );
+        try {
+            Map<String, Object> body = new HashMap<>();
+            body.put("body", summary);
+            body.put("event", "COMMENT");
+            body.put("comments", codeCommentList);
 
+            HttpEntity<Map<String, Object>> httpEntity = new HttpEntity<>(body, httpHeaders);
+            response = restTemplate.exchange(
+                    url,
+                    HttpMethod.POST,
+                    httpEntity, String.class
+            );
+        } catch (Exception e) {
+            // if an error happened post to pr with intruction on what to do
+            Map<String, Object> body = new HashMap<>();
+            body.put("body", "Clean pr was unable to post the code review. Please try closing the pr opening it again," +
+                    "if it still doesn't work please try again later :)");
+            body.put("event", "COMMENT");
 
+            HttpEntity<Map<String, Object>> httpEntity = new HttpEntity<>(body, httpHeaders);
+            restTemplate.exchange(
+                    url,
+                    HttpMethod.POST,
+                    httpEntity, String.class
+            );
+        }
+        return response;
     }
 
 }

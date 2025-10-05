@@ -73,9 +73,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
-
-        LOGGER.error("failed while filtering out cookies, user is being redirected back to login");
     }
-
-
 }

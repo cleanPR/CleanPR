@@ -68,12 +68,14 @@ public class RepoEventHandler extends BaseEventHandler {
                     .map(repo -> {
                         int repoId =(int) repo.get("id");
                         String repoName = (String) repo.get("full_name");
+                        boolean isPrivate = (boolean) repo.get("private");
 
                         return Repo.builder()
                                 .repoId(repoId)
                                 .repoName(repoName)
                                 .userId(userId)
                                 .installationId(installationId)
+                                .isPrivate(isPrivate)
                                 .build();
                     })
                     .toList();

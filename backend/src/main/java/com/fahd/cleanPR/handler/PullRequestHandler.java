@@ -15,6 +15,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -69,6 +70,7 @@ public class PullRequestHandler extends BaseEventHandler{
                     break;
                 case "closed":
                     // TODO: change the status of the pr
+                    handleClosedPullRequest(webHookPayload);
                     break;
                 default:
                     logInfo(String.format("no handler for this action={ %s }", action));
@@ -76,6 +78,31 @@ public class PullRequestHandler extends BaseEventHandler{
         } catch (Exception e) {
             logError(String.format("error while handling action={ %s }, error={ %s } ",  action, e.getMessage()));
         }
+    }
+
+    /**
+     *  when a pull request is closed
+     *  this function will be triggered
+     *  to change the status of the PR
+     * */
+    private void handleClosedPullRequest(Map<String, Object> webHookPayload) {
+        Map<String, Object> pullRequestInfo =  (Map<String, Object>) webHookPayload.get("pull_request");
+        Optional<PullRequest> pullRequest = pullRequestRepository.findById((long) pullRequestInfo.get("id"));
+        String mergedAt = (String) pullRequestInfo.get("merged_at");
+
+        // if the merge time stamp is null then pr was not merged it was just closed
+        if(pullRequest.isPresent()) {
+            if (mergedAt == null) {
+                pullRequest.get().setClosedAt(OffsetDateTime.now());
+                pullRequest.get().setStatus(Status.CLOSED);
+            } else {
+                pullRequest.get().setClosedAt(OffsetDateTime.parse(mergedAt));
+                pullRequest.get().setStatus(Status.MERGED);
+            }
+            pullRequestRepository.save(pullRequest.get());
+            return;
+        }
+        throw new EntityNotFoundException("Pull request entity not found");
     }
 
     private void handleOpenedPullRequest(Map<String, Object> webHookPayload) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
@@ -106,19 +133,19 @@ public class PullRequestHandler extends BaseEventHandler{
         // 4) fetch the pr file paths
         int pullRequestNumber = (int) webHookPayload.get("number");
         String url = String.format("/repos/%s/pulls/%d/files", repo.get().getRepoName(), pullRequestNumber);
-        JsonNode filePaths = gitHubServiceCaller.fetchFilePaths(accessToken, url);
+        JsonNode prFileInfo = gitHubServiceCaller.fetchFilePaths(accessToken, url);
 
         /**
          * The file pathObjects will only contain the code patches
          * but not all the pr files so we have to extract
          * the content urls and download the pr file
          * */
-        List<Map<String, Object>> filePathObjects = convertFilePathJsonToListOfMap(filePaths);
-        List<String> contentUrls = getContentUrl(filePathObjects);
+        List<Map<String, Object>> fileInfoObject = convertFilePathJsonToListOfMap(prFileInfo);
+        List<String> contentUrls = getContentUrl(fileInfoObject);
 
         // 5) get all the files in pr and the code diff
         List<String> prFiles = gitHubServiceCaller.fetchFileContent(contentUrls, accessToken);
-        List<String> codePatches = getCodePatches(filePathObjects);
+        List<String> codePatches = getCodePatches(fileInfoObject);
 
 
         // 6) prompt chatgpt for a code summary and code comments
@@ -128,17 +155,17 @@ public class PullRequestHandler extends BaseEventHandler{
 
         // 7) post chat gpts response in the pr
         String codeSummaryReviewUrl = String.format("/repos/%s/pulls/%d/reviews", repo.get().getRepoName(), pullRequestNumber);
-        gitHubServiceCaller.postReview(codeSummaryReviewUrl, pullRequestSummary, codeCommentsList, accessToken);
+        ResponseEntity<String> githubCodeReviewResponse = gitHubServiceCaller.postReview(codeSummaryReviewUrl, pullRequestSummary, codeCommentsList, accessToken);
 
         // 8) change the status of pr to reviewed
         Optional<PullRequest> reviewedPR = pullRequestRepository.findById(pullRequest.getId());
         if (!reviewedPR.isEmpty()) {
             reviewedPR.get().setStatus(Status.REVIEWED);
+            reviewedPR.get().setReviewedAt(OffsetDateTime.now());
             pullRequestRepository.save(reviewedPR.get());
         } else {
             throw new EntityNotFoundException("PullRequest not found");
         }
-
 
     }
 

@@ -27,4 +27,6 @@ public class Repo {
     @Column
     String repoName;
 
+    @Column
+    boolean isPrivate;
 }

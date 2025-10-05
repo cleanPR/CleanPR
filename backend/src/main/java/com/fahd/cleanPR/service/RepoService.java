@@ -5,6 +5,8 @@ import com.fahd.cleanPR.repository.RepoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class RepoService {
@@ -14,4 +16,10 @@ public class RepoService {
         repoRepository.save(newRepository);
     }
 
+    public List<Repo> getRepositoriesByUserId(int userId) {
+        return repoRepository.findAllByUserId(userId);
+    }
+
+    public void deleteRepository(int repoId) {
+    }
 }
