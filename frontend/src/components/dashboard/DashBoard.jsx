@@ -36,13 +36,6 @@ export default function DashBoard() {
           Repositories
         </SidebarTab>
 
-        <SidebarTab
-          className={selectedTab === 'pullRequests' ? 'active' : ''}
-          onClick={() => handleTabClick('pullRequests')}
-        >
-          Pull Requests
-        </SidebarTab>
-
         <ProfileSection>
           <Profile />
         </ProfileSection>

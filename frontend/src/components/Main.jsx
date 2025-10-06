@@ -5,6 +5,7 @@ import { Route, BrowserRouter, Routes } from 'react-router-dom'
 import OAuthCallBack from './Auth/OAuthCallBack'
 import { useAuth } from './hooks/AuthContext'
 import AuthenticationSuccess from './Auth/AuthenticationSuccess'
+import RepositoryPullRequests from './dashboard/RepositoryPullRequests'
 
 function Main() {
   const { isLoggedIn } = useAuth()
@@ -20,10 +21,12 @@ function Main() {
         
         <Route path="/authenticate" element={<OAuthCallBack />} />
         <Route path="/call-back" element={<AuthenticationSuccess />} />
+        <Route path="/dashboard/repository/:id" element={<RepositoryPullRequests />} />
         
       </Routes>
     </BrowserRouter>
   )
 }
+
 
 export default Main

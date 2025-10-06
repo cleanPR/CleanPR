@@ -4,6 +4,7 @@ package com.fahd.cleanPR.handler;
 import com.fahd.cleanPR.model.Installation;
 import com.fahd.cleanPR.model.Repo;
 import com.fahd.cleanPR.repository.InstallationRepository;
+import com.fahd.cleanPR.repository.PullRequestRepository;
 import com.fahd.cleanPR.repository.RepoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +21,15 @@ public class InstallationEventHandler extends BaseEventHandler {
 
     private final RepoRepository repoRepository;
 
+    private final PullRequestRepository  pullRequestRepository;
+
     @Autowired
     public InstallationEventHandler(final RepoRepository repoRepository,
-                                    final InstallationRepository installationRepository) {
+                                    final InstallationRepository installationRepository,
+                                    final PullRequestRepository pullRequestRepository) {
         this.installationRepository = installationRepository;
         this.repoRepository = repoRepository;
+        this.pullRequestRepository = pullRequestRepository;
     }
 
     @Override
@@ -59,6 +64,7 @@ public class InstallationEventHandler extends BaseEventHandler {
     private void handleUninstall(int installationId) {
         installationRepository.deleteById(installationId);
         repoRepository.deleteAllByInstallationId(installationId);
+        pullRequestRepository.deleteAllByInstallationId(installationId);
     }
 
     private void handleInstallation(Map<String, Object> installationData, List<Map<String, Object>> repositories) {
@@ -80,12 +86,14 @@ public class InstallationEventHandler extends BaseEventHandler {
                 .map(repo -> {
                     int repoId = (int) repo.get("id");
                     String repoName = (String) repo.get("full_name");
+                    boolean isPrivate = (boolean) repo.get("private");
 
                     return Repo.builder()
                             .repoId(repoId)
                             .repoName(repoName)
                             .userId(userId)
                             .installationId(installationId)
+                            .isPrivate(isPrivate)
                             .build();
 
                 })

@@ -7,6 +7,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
+/**
+ * this abstract class is base
+ * for all the event handler
+ * classes
+ * */
 public abstract class BaseEventHandler {
 
     private final Logger logger =  LoggerFactory.getLogger(getClass());

@@ -3,6 +3,12 @@ spring:
     active: secrets
   application:
     name: cleanPR
+  ai:
+    openai:
+      api-key: ${openai.api-key}
+      chat:
+        options:
+          model: gpt-4o
   security:
     oauth2:
       client:
@@ -14,10 +20,9 @@ spring:
               - read:user
               - user:email
   datasource:
-    url:  ${spring.datasource.url}
-    username: ${spring.application.name}
-    password: ${spring.datasource.password}
-    driver-class-name: org.postgresql.Driver
+    url:  ${postgres.url}
+    username: ${postgres.name}
+    password: ${postgres.password}
   jpa:
     hibernate:
       ddl-auto: update   # creates/updates tables automatically
@@ -39,6 +44,9 @@ github:
   appId: 1953390
   key: C:\Users\fahda\Downloads\clean-pr.2025-09-15.private-key.pem
 
+#logging:
+#  level:
+#    root: DEBUG
 
 
 
