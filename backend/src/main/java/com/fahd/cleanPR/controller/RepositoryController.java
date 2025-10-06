@@ -29,12 +29,13 @@ public class RepositoryController {
         }
     }
 
-    @DeleteMapping("/{repoId}")
-    public ResponseEntity<Void> deleteRepository(@PathVariable int repoId) {
+    @DeleteMapping("/{repoId}/installation/{installationId}")
+    public ResponseEntity<Void> deleteRepository(@PathVariable int repoId, @PathVariable int installationId) {
         try {
-            repoService.deleteRepository(repoId);
+            repoService.deleteRepository(repoId, installationId);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
         }
+    }
 }

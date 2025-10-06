@@ -38,15 +38,6 @@ function RepoListItem({ repo, onRemove }) {
             <path d="M9 18l6-6-6-6" stroke="#8b45ff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </GoToRepoButton>
-        <RemoveRepoButton
-          title="Remove Repository"
-          onClick={() => onRemove(repo.id)}
-        >
-          {/* Trash icon */}
-          <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
-            <path d="M6 7h12M9 7V5a3 3 0 013-3v0a3 3 0 013 3v2m2 0v12a2 2 0 01-2 2H8a2 2 0 01-2-2V7h12z" stroke="#ff6a6a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </RemoveRepoButton>
       </RepositoryActions>
     </RepositoryRow>
   );

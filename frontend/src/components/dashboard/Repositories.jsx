@@ -7,10 +7,6 @@ import {
   RepositoriesDivider,
   RepositoriesTable,
   RepositoryRow,
-  RepositoryName,
-  RepositoryMeta,
-  RepositoryActions,
-  RemoveRepoButton
 } from './styles/DashboardBody.styles';
 import { useAuth } from '../hooks/AuthContext';
 import api from '../api/api';
@@ -19,15 +15,15 @@ import RepoListItem from './RepoListItem';
 function Repositories() {
   const { user } = useAuth();
   const [repositories, setRepositories] = useState([]);
-  const handleAddRepository = async () => {
+  const handleAddRepository = () => {
     const url = `https://github.com/apps/clean-pr/installations/new?target_id=${user.userId}`;
-    window.open(url, '_blank', 'width=800,height=600');
+    window.location.href = url; // Redirect instead of opening a new window
   };
 
   // Remove repository handler
-  const handleRemoveRepository = async (repoId) => {
+  const handleRemoveRepository = async (repoId, installationId) => {
     try {
-      await api.delete(`/repository/${repoId}`);
+      await api.delete(`/repository/${repoId}/installation/${installationId}`);
       setRepositories(repositories.filter(r => r.id !== repoId));
     } catch (err) {
       console.log(err);
@@ -39,12 +35,20 @@ function Repositories() {
     api.get(`/repository/user/${user.userId}`)
       .then(res => {
         setRepositories(res.data);
-        console.log(res.data)
       })
       .catch(err => {
         console.log(err);
       });
   }, [user.userId]);
+
+  // Button label logic
+  const addRepoLabel = repositories.length === 0
+    ? "Add Repo"
+    : (
+      <>
+        Add <span style={{ color: "#bbaaff", fontWeight: 600 }}>/</span> Remove Repos
+      </>
+    );
 
   return (
     <RepositoriesTabWrapper>
@@ -54,7 +58,7 @@ function Repositories() {
           <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
             <path d="M12 5v14m7-7H5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
-          Add Repository
+          {addRepoLabel}
         </AddRepoButton>
       </RepositoriesTabHeading>
 

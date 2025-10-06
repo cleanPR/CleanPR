@@ -182,18 +182,26 @@ export const PRFilters = styled.div`
 `;
 
 export const PRSelect = styled.select`
-  background: rgba(139, 69, 255, 0.07);
-  color: #fff;
-  border: none;
+  background: linear-gradient(135deg, #e9e4f0 0%, #d3cce3 100%);
+  color: #4b267d;
+  border: 1.5px solid rgba(139, 69, 255, 0.18);
   border-radius: 10px;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 1.1rem;
   font-size: 1rem;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   outline: none;
-  transition: background 0.18s, color 0.18s;
-  box-shadow: 0 2px 8px rgba(139, 69, 255, 0.08);
+  transition: background 0.18s, color 0.18s, border 0.18s, box-shadow 0.18s;
+  box-shadow: 0 2px 8px rgba(139, 69, 255, 0.10);
 
   &:focus {
-    background: rgba(139, 69, 255, 0.13);
+    background: linear-gradient(135deg, #f5f7fa 0%, #b7aaff 100%);
+    border: 1.5px solid #8b45ff;
+    color: #8b45ff;
+    box-shadow: 0 0 0 2px rgba(139, 69, 255, 0.18);
+  }
+
+  option {
+    background: #fff;
+    color: #4b267d;
   }
 `;

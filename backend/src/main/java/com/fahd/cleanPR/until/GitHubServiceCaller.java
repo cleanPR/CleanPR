@@ -30,7 +30,25 @@ public class GitHubServiceCaller {
         this.restTemplate = restTemplate;
     }
 
-    public JsonNode fetchFilePaths(String accessToken, String uri) throws JsonProcessingException {
+    public ResponseEntity<String> deleteRepo(String url, String accessToken) {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.set(AUTHORIZATION, BEARER + accessToken);
+        httpHeaders.set(ACCEPT, GITHUB_REQUEST_BODY_TYPE);
+        httpHeaders.set("User-Agent", "clean-pr/1.0");
+
+        HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
+
+        ResponseEntity<String> response = restTemplate.exchange(
+                url,
+                HttpMethod.DELETE,
+                httpEntity,
+                String.class
+        );
+        return response;
+    }
+
+    public JsonNode fetchFilePaths(String accessToken,
+                                   String uri) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set(AUTHORIZATION, BEARER + accessToken);
@@ -49,7 +67,8 @@ public class GitHubServiceCaller {
         return jsonNode;
     }
 
-    public List<String> fetchFileContent(List<String> rawUrls, String accessToken) {
+    public List<String> fetchFileContent(List<String> rawUrls,
+                                         String accessToken) {
         List<String> fileContent = new ArrayList<>();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set(AUTHORIZATION, BEARER + accessToken);
@@ -81,7 +100,10 @@ public class GitHubServiceCaller {
         return fileContent;
     }
 
-    public ResponseEntity<String> postReview(String url, String summary, List<Map<String, Object>> codeCommentList, String accessToken) {
+    public ResponseEntity<String> postReview(String url,
+                                             String summary,
+                                             List<Map<String, Object>> codeCommentList,
+                                             String accessToken) {
         ResponseEntity<String> response = null;
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.set("Authorization", BEARER + accessToken);
