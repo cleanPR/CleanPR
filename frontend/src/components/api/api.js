@@ -6,5 +6,16 @@ const api = axios.create({
     withCredentials: true,
 })
 
+api.interceptors.response.use(
+    response => response,
+    error => {
+        if (error.response && error.response.data?.error === "Invalid JWT") {
+            localStorage.removeItem('userProfile')
+            window.location.href = "/"
+        }
+        return Promise.reject(error);
+    }
+);
+
 
 export default api;
