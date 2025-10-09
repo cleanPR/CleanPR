@@ -41,7 +41,10 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(requests -> requests
                         // permitting all preflights
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/api/v1/public", "/api/v1/webhook/github").permitAll()
+                        .requestMatchers(
+                                "/api/v1/webhook/github",
+                                "/api/v1/auth/logout"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth -> oauth
