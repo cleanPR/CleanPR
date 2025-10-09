@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-
+import api from '../api/api';
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
@@ -19,9 +19,25 @@ export function AuthProvider({ children }) {
 
 	const isLoggedIn = !!user;
 
-	const logout = () => {
-		setUser(null);
-		localStorage.removeItem('userProfile');
+	const logout = async () => {
+		try {
+			const res = api.post("/auth/logout")
+			console.log(res.data)
+
+		} catch(e) {
+			// The JWT will be cleared automatically by the backend,
+			// so you don’t need to handle this unless you want to show
+			// an error message.
+		} finally {
+			setUser(null)
+			// if the error is because a invalid jwt then it will be
+			// intercepted and the userProfile will be removed
+			// before it gets to this if statement, thats why 
+			// we need to check if it exists or not 
+			if (localStorage.getItem('userProfile') !== null) {
+				localStorage.removeItem('userProfile');
+			}
+		}
 	};
 
 	return (

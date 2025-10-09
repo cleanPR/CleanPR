@@ -12,9 +12,9 @@ function Profile() {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
 
-    const handleLogout = () => {
-        logout();
-        navigate("/");
+    const handleLogout = async () => {
+        await logout();
+        navigate('/');
     };
 
     return (
