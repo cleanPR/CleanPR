@@ -7,7 +7,8 @@ public interface CleanPrConstants {
     String GITHUB_WEB_HOOK_ROUTE = API_PREFIX + "/webhook";
     String REPOSITORY_ROUTE = API_PREFIX + "/repository";
     String PULL_REQUEST_ROUTE = API_PREFIX + "/pull-requests";
-
+    String AUTH_ROUTE = API_PREFIX + "/auth";
+    String LOGOUT_ROUTE = AUTH_ROUTE + "/logout";
     // api constants
     String BEARER = "Bearer ";
     String AUTHORIZATION = "Authorization";

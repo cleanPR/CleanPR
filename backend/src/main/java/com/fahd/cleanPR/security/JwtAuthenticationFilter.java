@@ -36,42 +36,56 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws IOException, ServletException {
-        Cookie[] cookies = request.getCookies();
-        Cookie jwtCookie = null;
-        if (cookies != null) {
-            jwtCookie = Arrays.stream(cookies)
-                    .filter(cookie -> cookie.getName().equals("jwt"))
-                    .findFirst()
-                    .orElse(null);
-        }
+        try {
+            Cookie[] cookies = request.getCookies();
+            Cookie jwtCookie = null;
+            if (cookies != null) {
+                jwtCookie = Arrays.stream(cookies)
+                        .filter(cookie -> cookie.getName().equals("jwt"))
+                        .findFirst()
+                        .orElse(null);
+            }
 
-        // if the cookie is expired or does not exist remove it and redirect the user back to the login
-        if (jwtCookie == null) {
+            // if the cookie is expired or does not exist remove it and redirect the user back to the login
+            if (jwtCookie == null) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            String jwtToken = jwtCookie.getValue();
+            String email = jwtService.extractSubject(jwtToken);
+
+            // if the token is valid set the auth principle else redirect back to logIn
+            if (!jwtService.isTokenValid(jwtToken, email)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            // check if the user account exists if not don't authenticate it
+
+            Account account = accountService.findByUserEmail(email);
+            if (account != null) {
+
+                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+                        account, null, Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
+                );
+
+                SecurityContextHolder.getContext().setAuthentication(auth);
+            }
+
             filterChain.doFilter(request, response);
-            return;
+        } catch (Exception e) {
+            LOGGER.error("Error during JWT authentication: {}", e.getMessage());
+
+            Cookie expiredCookie = new Cookie("jwt", null);
+            expiredCookie.setPath("/");
+            expiredCookie.setHttpOnly(true);
+            expiredCookie.setMaxAge(0);
+            response.addCookie(expiredCookie);
+
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\": \"Invalid JWT\"}");
         }
-
-        String jwtToken = jwtCookie.getValue();
-        String email = jwtService.extractSubject(jwtToken);
-
-        // if the token is valid set the auth principle else redirect back to logIn
-        if (!jwtService.isTokenValid(jwtToken, email)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        // check if the user account exists if not don't authenticate it
-
-        Account account = accountService.findByUserEmail(email);
-        if (account != null) {
-
-            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                    account, null, Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))
-            );
-
-            SecurityContextHolder.getContext().setAuthentication(auth);
-        }
-
-        filterChain.doFilter(request, response);
     }
 }

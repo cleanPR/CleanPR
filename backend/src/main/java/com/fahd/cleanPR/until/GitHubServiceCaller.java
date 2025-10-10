@@ -30,22 +30,6 @@ public class GitHubServiceCaller {
         this.restTemplate = restTemplate;
     }
 
-    public ResponseEntity<String> deleteRepo(String url, String accessToken) {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set(AUTHORIZATION, BEARER + accessToken);
-        httpHeaders.set(ACCEPT, GITHUB_REQUEST_BODY_TYPE);
-        httpHeaders.set("User-Agent", "clean-pr/1.0");
-
-        HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
-
-        ResponseEntity<String> response = restTemplate.exchange(
-                url,
-                HttpMethod.DELETE,
-                httpEntity,
-                String.class
-        );
-        return response;
-    }
 
     public JsonNode fetchFilePaths(String accessToken,
                                    String uri) throws JsonProcessingException {
