@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Repositories from './Repositories';
-import PullRequests from './PullRequests';
 import Profile from './Profile';
+
 import {
   DashboardWrapper,
   Sidebar,
@@ -16,7 +16,6 @@ export default function DashBoard() {
   
   const tabs = {
     repositories: <Repositories />,
-    pullRequests: <PullRequests />
   };
 
   const handleTabClick = (tab) => {
