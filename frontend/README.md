@@ -1,5 +1,7 @@
 # CleanPR
 
+
+
 ## Project overview
 
 CleanPR speeds up and standardizes code reviews for GitHub pull requests by using a GitHub App backend that automatically generates professional PR summaries and inline comments using an LLM.
@@ -17,6 +19,57 @@ Why it helps:
 - Faster feedback loop for authors
 - More consistent and focused reviews
 - Keeps a record of review status in a database for later inspection
+
+## View the project
+
+### View the project live
+[Some link here when the project is deployed](https://www.example.com)
+
+### View the project locally
+
+1. Clone the repo
+```bash
+git clone <repo-url>
+```
+
+2. Open the backend folder in your favorite IDE and add a secret file in the resources folder
+
+naming convention: application-secrets.yml 
+
+```yaml
+gitHubClientId: {clientId}
+gitHubClientSecret: {clientSecret}
+jwtSecret: {jwtSecret}
+
+postgres:
+  url: {db_url}
+  name: {db_username}
+  password: {db_password}
+
+openai:
+  api-key: {your openAi apikey}
+```
+
+3. Make sure postgreSQL is running locally
+
+4. Run the backend
+
+```bash
+mvn spring-boot:run 
+
+or if you have intelliJ click the run button
+```
+
+5. Run the frontend 
+
+    Make sure you are in the frontend directory
+
+```bash
+npm install
+
+npm start
+```
+
 
 ## Integration with GitHub
 This project connects to GitHub via a GitHub App. Below is a condensed integration guide with quick references and visuals.
