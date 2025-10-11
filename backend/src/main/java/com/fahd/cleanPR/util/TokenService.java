@@ -1,4 +1,4 @@
-package com.fahd.cleanPR.until;
+package com.fahd.cleanPR.util;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;

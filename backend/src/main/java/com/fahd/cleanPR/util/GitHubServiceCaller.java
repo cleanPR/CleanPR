@@ -1,4 +1,4 @@
-package com.fahd.cleanPR.until;
+package com.fahd.cleanPR.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
