@@ -18,6 +18,90 @@ Why it helps:
 - More consistent and focused reviews
 - Keeps a record of review status in a database for later inspection
 
+## Run locally (quick start)
+
+Follow these steps to clone and run CleanPR locally (frontend + backend + Postgres). Commands are shown for a bash shell.
+
+1. Clone the repo
+
+```bash
+git clone https://github.com/fahd209/CleanPR.git
+cd CleanPR
+```
+
+2. Start Postgres (choose local installation or Docker)
+
+# Option A: run Postgres with Docker (quick)
+```bash
+docker run --name cleanpr-db -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -e POSTGRES_DB=cleanpr -p 5432:5432 -d postgres:15
+```
+
+# Option B: use a locally installed Postgres
+# create a database and user (example):
+```bash
+createdb cleanpr
+# or use psql to create user and db if needed
+```
+
+3. Configure backend secrets
+
+The backend reads configuration from `application.yml` and environment variables. Create a local `application-secrets.yml` (do NOT commit it) at `backend/src/main/resources/application-secrets.yml` or set environment variables.
+
+Example minimal `application-secrets.yml` (replace placeholders):
+
+```yaml
+gitHubClientId: YOUR_GITHUB_OAUTH_CLIENT_ID
+gitHubClientSecret: YOUR_GITHUB_OAUTH_CLIENT_SECRET
+jwtSecret: your_jwt_secret_base64
+
+postgres:
+    url: "jdbc:postgresql://localhost:5432/cleanpr"
+    name: postgres
+    password: postgres
+
+openai:
+    api-key: YOUR_OPENAI_API_KEY
+
+# Path to your GitHub App private key (.pem) on the machine running the backend
+github:
+    appId: YOUR_GITHUB_APP_ID
+    key: /absolute/path/to/your/private-key.pem
+```
+
+4. Run the backend (Spring Boot)
+
+From the `backend` folder run the Maven wrapper (bash):
+
+```bash
+cd backend
+./mvnw spring-boot:run
+```
+
+The backend will start on port 8081 by default (see `backend/src/main/resources/application.yml`).
+
+5. Run the frontend (React)
+
+Open a new terminal and run:
+
+```bash
+cd frontend
+npm install
+npm start
+```
+
+The frontend dev server runs on port 3000 by default.
+
+6. Quick smoke test
+
+- Visit `http://localhost:3000` and sign in using the Login button (this redirects to the backend OAuth flow).
+- Install the GitHub App (use the dashboard Add Repo button) or simulate webhook events to exercise handlers.
+
+Notes
+
+- Do NOT commit secrets. Keep `application-secrets.yml` out of version control (add to `.gitignore`).
+- If you run Postgres on a different host/port, update `postgres.url` accordingly.
+
+
 ## Integration with GitHub
 This project connects to GitHub via a GitHub App. Below is a condensed integration guide with quick references and visuals.
 

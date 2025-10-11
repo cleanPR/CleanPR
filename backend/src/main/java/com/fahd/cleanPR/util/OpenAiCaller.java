@@ -1,4 +1,4 @@
-package com.fahd.cleanPR.until;
+package com.fahd.cleanPR.util;
 
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;

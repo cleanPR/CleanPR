@@ -1,20 +1,14 @@
 package com.fahd.cleanPR.service;
 
-import com.fahd.cleanPR.model.Installation;
 import com.fahd.cleanPR.model.Repo;
 import com.fahd.cleanPR.repository.InstallationRepository;
 import com.fahd.cleanPR.repository.RepoRepository;
-import com.fahd.cleanPR.until.GitHubServiceCaller;
-import com.fahd.cleanPR.until.TokenService;
+import com.fahd.cleanPR.util.GitHubServiceCaller;
+import com.fahd.cleanPR.util.TokenService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
