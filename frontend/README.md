@@ -23,7 +23,7 @@ Why it helps:
 ## View the project
 
 ### View the project live
-[Some link here when the project is deployed](https://www.example.com)
+[Some link here when the project is deployed](https://www.google.com)
 
 ### View the project locally
 
