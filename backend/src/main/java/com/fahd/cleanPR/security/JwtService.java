@@ -24,7 +24,6 @@ public class JwtService {
     @Value("${jwt.secret.key}")
     private String JWT_SECRET;
 
-    // + 1000L * 60 * 60 * 24
     public String generateToken(Account account) {
         return Jwts
                 .builder()
