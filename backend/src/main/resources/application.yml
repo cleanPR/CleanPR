@@ -1,11 +1,9 @@
 spring:
-  profiles:
-    active: secrets
   application:
     name: cleanPR
   ai:
     openai:
-      api-key: ${openai.api-key}
+      api-key: ${OPENAI_KEY}
       chat:
         options:
           model: gpt-4o
@@ -14,15 +12,15 @@ spring:
       client:
         registration:
           github:
-            client-id: ${gitHubClientId}
-            client-secret: ${gitHubClientSecret}
+            client-id: ${GITHUB_CLIENT_ID}
+            client-secret: ${GITHUB_CLIENT_SECRET}
             scope:
               - read:user
               - user:email
   datasource:
-    url:  ${postgres.url}
-    username: ${postgres.name}
-    password: ${postgres.password}
+    url:  ${DB_URL}
+    username: ${DB_NAME}
+    password: ${DB_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update   # creates/updates tables automatically
@@ -35,11 +33,12 @@ spring:
 client:
   url: http://localhost:3000
 
-jwt.secret.key: ${jwtSecret}
+jwt.secret.key: ${JWT_SECRET}
 
 server:
   port: 8081
 
+# used to generate JWT tokens for authentication to github
 github:
   appId: 1953390
   key: C:\Users\fahda\Downloads\clean-pr.2025-09-15.private-key.pem
