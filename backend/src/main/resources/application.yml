@@ -36,7 +36,7 @@ client:
 jwt.secret.key: ${JWT_SECRET}
 
 server:
-  port: 8081
+  port: ${PORT}
 
 # used to generate JWT tokens for authentication to github
 github:

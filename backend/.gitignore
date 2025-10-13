@@ -21,7 +21,6 @@ target/
 
 ### application secret variables
 src/main/resources/application-dev.yml
-src/main/resources/application-prod.yml
 
 ### NetBeans ###
 /nbproject/private/
