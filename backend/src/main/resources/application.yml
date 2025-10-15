@@ -33,7 +33,8 @@ spring:
 client:
   url: ${CLIENT_URL}
 
-jwt.secret.key: ${JWT_SECRET}
+jwt:
+  secret.key: ${JWT_SECRET}
 
 server:
   port: ${PORT:8081}
