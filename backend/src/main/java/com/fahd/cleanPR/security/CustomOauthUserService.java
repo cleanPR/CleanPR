@@ -20,12 +20,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.fahd.cleanPR.CleanPrConstants.GITHUB_EMAIL_ENDPOINT;
+
 @Service
 public class CustomOauthUserService extends DefaultOAuth2UserService {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(CustomOauthUserService.class);
 
-    private final String GITHUB_EMAIL_ENDPOINT = "https://api.github.com/user/emails";
 
     private final String GITHUB_REQUEST_BODY_TYPE = "application/vnd.github+json";
 

@@ -32,6 +32,7 @@ function OAuthCallBack() {
         setUser(null);
         navigate("/");
         displayMessage("Failed to login", "error")
+        console.log(err)
       });
   }, [setUser, navigate]);
 
