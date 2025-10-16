@@ -7,14 +7,12 @@ import {
   GithubIcon,
   LogoImg
 } from './styles/Auth.styles';
-import { useNavigate } from 'react-router-dom';
 
 import logo from '../../assests/images/logo.png';
 
 function Auth() {
-  const redirect = useNavigate();
   const handleLogin = () => {
-    window.location.href="http://localhost:8081/oauth2/authorization/github"
+    window.location.href="https://cleanpr-prod-5b39094b4eb0.herokuapp.com/oauth2/authorization/github"
   };
 
   return (

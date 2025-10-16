@@ -53,14 +53,11 @@ const SuccessText = styled.h2`
   animation: ${pop} 0.7s 0.2s cubic-bezier(0.23, 1, 0.32, 1);
 `;
 
-
-
 /**
    * the user will be redirected this component 
    * after a successfult authentication in the 
    * backend.
    */
-
 function AuthenticationSuccess() {
   const navigate = useNavigate();
 
@@ -68,9 +65,8 @@ function AuthenticationSuccess() {
   // the animation finish
   useEffect(() => {
     setTimeout(() => {
-      navigate("/authenticate")
-    }, 1500)
-    
+        navigate("/authenticate")
+      }, 1500)
   }, [])
 
   return (

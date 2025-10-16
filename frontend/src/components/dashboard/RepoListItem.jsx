@@ -4,7 +4,6 @@ import {
   RepositoryName,
   RepositoryMeta,
   RepositoryActions,
-  RemoveRepoButton,
   RepositoryRow,
   GoToRepoButton
 } from './styles/DashboardBody.styles';
