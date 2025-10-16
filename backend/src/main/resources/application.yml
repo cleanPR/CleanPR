@@ -31,17 +31,18 @@ spring:
       ddl-auto: create-drop
 
 client:
-  url: http://localhost:3000
+  url: ${CLIENT_URL}
 
-jwt.secret.key: ${JWT_SECRET}
+jwt:
+  secret.key: ${JWT_SECRET}
 
 server:
-  port: 8081
+  port: ${PORT:8081}
 
 # used to generate JWT tokens for authentication to github
 github:
   appId: 1953390
-  key: C:\Users\fahda\Downloads\clean-pr.2025-09-15.private-key.pem
+  key: ${CLEAN_PR_PEM}
 
 #logging:
 #  level:

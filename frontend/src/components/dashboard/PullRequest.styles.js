@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { fadeInUp } from "./styles/Dashboard.styles";
 
 export const PRWrapper = styled.div`

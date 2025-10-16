@@ -21,7 +21,7 @@ export function AuthProvider({ children }) {
 
 	const logout = async () => {
 		try {
-			const res = api.post("/auth/logout")
+			api.post("/auth/logout")
 		} catch(e) {
 			// The JWT will be cleared automatically by the backend,
 			// so you don’t need to handle this unless you want to show

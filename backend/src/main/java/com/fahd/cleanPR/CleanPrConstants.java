@@ -15,4 +15,5 @@ public interface CleanPrConstants {
     String GITHUB_REQUEST_BODY_TYPE = "application/vnd.github+json";
     String GITHUB_BASE_URL = "https://api.github.com";
     String ACCEPT = "Accept";
+    String GITHUB_EMAIL_ENDPOINT = "https://api.github.com/user/emails";
 }

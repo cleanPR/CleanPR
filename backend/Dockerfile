@@ -12,6 +12,7 @@ WORKDIR /app
 
 COPY --from=builder ./app/target/*.jar /app/jar-file/cleanpr.jar
 COPY /src/main/resources/application.yml /app/config/application.yml
+COPY  /app/config/private-key.pem
 
 EXPOSE 8081
 

@@ -20,7 +20,8 @@ target/
 *.ipr
 
 ### application secret variables
-src/main/resources/application-secrets.yml
+src/main/resources/application-dev.yml
+clean-pr.2025-09-15.private-key.pem
 
 ### NetBeans ###
 /nbproject/private/
