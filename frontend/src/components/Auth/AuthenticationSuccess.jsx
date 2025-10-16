@@ -67,7 +67,7 @@ function AuthenticationSuccess() {
     setTimeout(() => {
         navigate("/authenticate")
       }, 1500)
-  }, [])
+  }, [navigate])
 
   return (
     <Wrapper>
