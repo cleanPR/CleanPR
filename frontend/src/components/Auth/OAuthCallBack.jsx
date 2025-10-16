@@ -34,7 +34,7 @@ function OAuthCallBack() {
         displayMessage("Failed to login", "error")
         console.log(err)
       });
-  }, [setUser, navigate]);
+  }, [setUser, navigate, displayMessage]);
 
   return (
     <AuthWrapper>
